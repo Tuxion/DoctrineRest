@@ -1,0 +1,4 @@
+tests/unit/vendor
+tests/unit/composer.json
+tests/unit/composer.lock
+vendor

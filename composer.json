@@ -1,0 +1,37 @@
+{
+    "name": "tuxion/doctrine-rest",
+    "type": "library",
+    "description": "Links Doctrine models to Aura.Router in a simple CRUD fashion.",
+    "keywords": ["doctrine", "rest", "crud"],
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Beanow",
+            "email": "beanow@project-virality.com"
+        }
+    ],
+    "minimum-stability": "dev",
+    "require": {
+        "php": ">=5.3.0"
+    },
+    "require-dev": {
+        "aura/router": "2.*@dev"
+    },
+    "autoload": {
+        "psr-4": {
+            "Tuxion\\DoctrineRest\\": "src/",
+            "Tuxion\\DoctrineRest\\_Config\\": "config/"
+        }
+    },
+    "extra": {
+        "aura": {
+            "type": "library",
+            "config": {
+                "common": "Tuxion\\DoctrineRest\\_Config\\Common"
+            }
+        },
+        "branch-alias": {
+            "dev-develop-2": "2.0.x-dev"
+        }
+    }
+}
