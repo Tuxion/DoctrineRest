@@ -2,6 +2,7 @@
 
 class Common extends Config
 {
+  
   public function define(Container $di)
   {
     
@@ -11,4 +12,5 @@ class Common extends Config
   {
     
   }
+  
 }

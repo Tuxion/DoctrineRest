@@ -4,4 +4,4 @@ test:
 watch:
 	cd tests/unit && composer self-update && cp ../../composer.json . && \
 	if [ -d vendor ] ; then composer update ; else composer install ; fi && \
-	watch -n 5 find ../../src -mmin -2 -iname '"*.php"' -exec './phpunit.sh watch \;'
+	watch -n 3 find ./src ../../src -mmin -1 -iname '"*.php"' -exec "./phpunit.sh --watched-mode \;" -quit

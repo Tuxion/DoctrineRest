@@ -1,4 +1,5 @@
-if [ $1 != 'watch' ]
+mode=$1
+if [ $mode != "--watched-mode" ]
 then
   composer self-update
   cp ../../composer.json .
@@ -9,6 +10,13 @@ then
       composer install
   fi
 fi
+
 phpunit
 status=$?
-exit $status
+
+if [ $mode != "--watched-mode" ]
+then
+  exit $status
+else
+  exit 0
+fi
