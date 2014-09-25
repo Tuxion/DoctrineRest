@@ -15,7 +15,8 @@
         "php": ">=5.3.0"
     },
     "require-dev": {
-        "aura/router": "2.*@dev"
+        "aura/router": "2.*@dev",
+        "aura/web": "2.*@dev"
     },
     "autoload": {
         "psr-4": {

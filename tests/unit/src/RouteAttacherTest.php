@@ -1,6 +1,10 @@
 <?php namespace Tuxion\DoctrineRest;
 
 use Tuxion\DoctrineRest\RouteAttacher;
+use Tuxion\DoctrineRest\Driver\DummyDriver;
+use Tuxion\DoctrineRest\Action\ActionFactory;
+use Tuxion\DoctrineRest\Responder\DummyResponder;
+use Aura\Web\WebFactory;
 use Aura\Router\RouterFactory;
 
 class RouteAttacherTest extends \PHPUnit_Framework_TestCase
@@ -14,9 +18,29 @@ class RouteAttacherTest extends \PHPUnit_Framework_TestCase
     $this->factory = new RouterFactory();
   }
   
+  protected function newRequest()
+  {
+    $factory = new WebFactory(array());
+    return $factory->newRequest();
+  }
+  
+  protected function newResponder()
+  {
+    return new DummyResponder();
+  }
+  
   protected function newRouter()
   {
     return $this->factory->newInstance();
+  }
+  
+  protected function newFactory()
+  {
+    return new ActionFactory(
+      $this->newRequest(),
+      $this->newResponder(),
+      new DummyDriver()
+    );
   }
   
   protected function assertIsRoute($actual)
@@ -76,10 +100,33 @@ class RouteAttacherTest extends \PHPUnit_Framework_TestCase
     $this->assertTrue(class_exists('Tuxion\DoctrineRest\RouteAttacher'));
     
     //Create the route attacher.
-    $instance = new RouteAttacher();
+    $instance = new RouteAttacher(
+      $this->newFactory(),
+      'TestModel',
+      'test-resource'
+    );
     
     //Is callable.
     $this->assertTrue(is_callable($instance));
+    
+  }
+  
+  public function testConstruct()
+  {
+    
+    $args = array(
+      'model' => 'TestModel',
+      'resource' => 'test-resource',
+      'factory' => $this->newFactory()
+    );
+    
+    //Create the route attacher.
+    $instance = new RouteAttacher($args['factory'], $args['model'], $args['resource']);
+    
+    //See if the properties are set correctly.
+    $this->assertSame($args['model'], $instance->getModel());
+    $this->assertSame($args['resource'], $instance->getResource());
+    $this->assertSame($args['factory'], $instance->getActionFactory());
     
   }
   
@@ -87,7 +134,11 @@ class RouteAttacherTest extends \PHPUnit_Framework_TestCase
   {
     
     //Create the route attacher.
-    $instance = new RouteAttacher();
+    $instance = new RouteAttacher(
+      $this->newFactory(),
+      'TestModel',
+      'test-resource'
+    );
     
     //Able to attach.
     $router = $this->newRouter();
@@ -103,7 +154,11 @@ class RouteAttacherTest extends \PHPUnit_Framework_TestCase
   {
     
     //Create the route attacher.
-    $instance = new RouteAttacher();
+    $instance = new RouteAttacher(
+      $this->newFactory(),
+      'TestModel',
+      'test-resource'
+    );
     
     //Able to attach as callable resource.
     $router = $this->newRouter();

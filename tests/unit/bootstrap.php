@@ -10,3 +10,12 @@ if (! is_readable($composer_autoload)) {
 
 require $composer_autoload;
 require dirname(dirname(__DIR__)) . '/autoload.php';
+
+//Dummy classes we need.
+$dummies = array(
+  'src/Driver/DummyDriver.php',
+  'src/Responder/DummyResponder.php'
+);
+
+foreach($dummies as $dummy)
+  require_once($dummy);
