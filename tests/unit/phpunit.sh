@@ -9,9 +9,11 @@ then
   else
       composer install
   fi
+  phpunit --coverage-clover=coverage.clover
+else
+  phpunit
 fi
 
-phpunit
 status=$?
 
 if [ $mode != "--watched-mode" ]
