@@ -1,5 +1,5 @@
 mode=$1
-if [ $mode != "--watched-mode" ]
+if [ "$mode" != "--watched-mode" ]
 then
   composer self-update
   cp ../../composer.json .
@@ -16,7 +16,7 @@ fi
 
 status=$?
 
-if [ $mode != "--watched-mode" ]
+if [ "$mode" != "--watched-mode" ]
 then
   exit $status
 else
