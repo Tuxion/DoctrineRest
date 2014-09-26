@@ -2,6 +2,7 @@
 
 use Tuxion\DoctrineRest\RouteAttacher;
 use Tuxion\DoctrineRest\Driver\DummyDriver;
+use Tuxion\DoctrineRest\Action\Action;
 use Tuxion\DoctrineRest\Action\ActionFactory;
 use Tuxion\DoctrineRest\Responder\DummyResponder;
 use Aura\Web\WebFactory;
@@ -41,56 +42,6 @@ class RouteAttacherTest extends \PHPUnit_Framework_TestCase
       $this->newResponder(),
       new DummyDriver()
     );
-  }
-  
-  protected function assertIsRoute($actual)
-  {
-    $this->assertInstanceOf('Aura\Router\Route', $actual);
-  }
-  
-  protected function assertRoute($expect, $actual)
-  {
-    $this->assertIsRoute($actual);
-    foreach ($expect as $key => $val) {
-      $this->assertSame($val, $actual->$key);
-    }
-  }
-  
-  protected function assertRestRoutes($namePrefix, $pathPrefix, $actual)
-  {
-    
-    $expect = array(
-      'name' => "$namePrefix.create",
-      'path' => "$pathPrefix",
-      'method' => array('POST'),
-      'tokens' => array('id' => '\d+')
-    );
-    $this->assertRoute($expect, $actual["$namePrefix.create"]);
-    
-    $expect = array(
-      'name' => "$namePrefix.read",
-      'path' => "$pathPrefix/{id}",
-      'method' => array('GET'),
-      'tokens' => array('id' => '\d+')
-    );
-    $this->assertRoute($expect, $actual["$namePrefix.read"]);
-    
-    $expect = array(
-      'name' => "$namePrefix.replace",
-      'path' => "$pathPrefix/{id}",
-      'method' => array('PUT'),
-      'tokens' => array('id' => '\d+')
-    );
-    $this->assertRoute($expect, $actual["$namePrefix.replace"]);
-    
-    $expect = array(
-      'name' => "$namePrefix.delete",
-      'path' => "$pathPrefix/{id}",
-      'method' => array('DELETE'),
-      'tokens' => array('id' => '\d+')
-    );
-    $this->assertRoute($expect, $actual["$namePrefix.delete"]);
-    
   }
   
   public function testIsCallable()
@@ -169,6 +120,67 @@ class RouteAttacherTest extends \PHPUnit_Framework_TestCase
     $routes = $router->getRoutes();
     $this->assertRestRoutes('resource', '/resource', $routes);
     
+  }
+  
+  protected function assertRestRoutes($namePrefix, $pathPrefix, $actual)
+  {
+    
+    $expect = array(
+      'name' => "$namePrefix.create",
+      'path' => "$pathPrefix",
+      'method' => array('POST'),
+      'tokens' => array('id' => '\d+')
+    );
+    $this->assertRoute($expect, $actual["$namePrefix.create"]);
+    $this->assertInstanceOf(
+      'Tuxion\DoctrineRest\Action\Action',
+      $actual["$namePrefix.create"]->values['action']
+    );
+    
+    $expect = array(
+      'name' => "$namePrefix.read",
+      'path' => "$pathPrefix/{id}",
+      'method' => array('GET'),
+      'tokens' => array('id' => '\d+')
+    );
+    $this->assertRoute($expect, $actual["$namePrefix.read"]);
+    $this->assertInstanceOf(
+      'Tuxion\DoctrineRest\Action\Action',
+      $actual["$namePrefix.read"]->values['action']
+    );
+    
+    $expect = array(
+      'name' => "$namePrefix.replace",
+      'path' => "$pathPrefix/{id}",
+      'method' => array('PUT'),
+      'tokens' => array('id' => '\d+')
+    );
+    $this->assertRoute($expect, $actual["$namePrefix.replace"]);
+    $this->assertInstanceOf(
+      'Tuxion\DoctrineRest\Action\Action',
+      $actual["$namePrefix.replace"]->values['action']
+    );
+    
+    $expect = array(
+      'name' => "$namePrefix.delete",
+      'path' => "$pathPrefix/{id}",
+      'method' => array('DELETE'),
+      'tokens' => array('id' => '\d+')
+    );
+    $this->assertRoute($expect, $actual["$namePrefix.delete"]);
+    $this->assertInstanceOf(
+      'Tuxion\DoctrineRest\Action\Action',
+      $actual["$namePrefix.delete"]->values['action']
+    );
+    
+  }
+  
+  protected function assertRoute($expect, $actual)
+  {
+    $this->assertInstanceOf('Aura\Router\Route', $actual);
+    foreach ($expect as $key => $val) {
+      $this->assertSame($val, $actual->$key);
+    }
   }
   
 }

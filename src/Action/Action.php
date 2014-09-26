@@ -38,7 +38,13 @@ class Action
     return $this->resource;
   }
   
-  public function __construct(Request $request, ResponderInterface $responder, DriverInterface $driver, $action, $model, $resource)
+  public function __construct(
+    Request $request,
+    ResponderInterface $responder,
+    DriverInterface $driver,
+    $action,
+    $model,
+    $resource)
   {
     $this->model = $model;
     $this->driver = $driver;
@@ -48,25 +54,42 @@ class Action
     $this->responder = $responder;
   }
   
-  #TODO
+  #TODO should return responder, not driver response.
   public function __invoke()
   {
     
-    switch($this->action){
+    $action = $this->action;
+    switch($action){
       
       case 'create':
-      case 'replace':
-        $data = json_decode($this->request->content);
+        $data = $this->getRequestContent();
         return $this->driver->$action($this->model, $data);
+        
+      case 'replace':
+        $data = $this->getRequestContent();
+        return $this->driver->$action($this->model, $this->request->params->id, $data);
       
       case 'read':
       case 'delete':
         return $this->driver->$action($this->model, $this->request->params->id);
       
       default:
-        throw new Exception("Unknown action '".$this->action."'");
+        throw new \Exception("Unknown action '".$action."'");
       
     }
+    
+  }
+  
+  protected function getRequestContent()
+  {
+    
+    $content = $this->request->content;
+    
+    if($content->getType() !== 'application/json'){
+      throw new \Exception("Invalid Content-Type, must be 'application/json'.");
+    }
+    
+    return $content->get();
     
   }
   
