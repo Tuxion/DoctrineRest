@@ -9,7 +9,7 @@ then
   else
       composer install
   fi
-  phpunit --coverage-clover coverage.clover
+  phpunit --coverage-clover=coverage.clover
 else
   phpunit
 fi
