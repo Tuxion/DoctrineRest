@@ -1,5 +1,5 @@
 test:
-	cd tests/unit && ./phpunit.sh
+	cd tests/unit && ./phpunit.sh --coverage && x-www-browser ./coverage.html/dashboard.html
 
 watch:
 	cd tests/unit && composer self-update && cp ../../composer.json . && \
