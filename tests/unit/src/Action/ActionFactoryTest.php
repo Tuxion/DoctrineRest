@@ -1,6 +1,6 @@
 <?php namespace Tuxion\DoctrineRest\Action;
 
-use Tuxion\DoctrineRest\Driver\DummyDriver;
+use Tuxion\DoctrineRest\Domain\Driver\DummyDriver;
 use Tuxion\DoctrineRest\Responder\DummyResponder;
 use Aura\Web\WebFactory;
 
@@ -38,6 +38,36 @@ class ActionFactoryTest extends \PHPUnit_Framework_TestCase
     
     //Is callable.
     $this->assertTrue(is_callable($instance));
+    
+  }
+  
+  public function testProperties()
+  {
+    
+    //Properties.
+    $params = array(
+      'model' => 'DummyModel',
+      'resource' => 'dummy-resource'
+    );
+    
+    //Constructor dependencies.
+    $driver = $this->newDriver();
+    $request = $this->newRequest();
+    $responder = $this->newResponder();
+    
+    //Instantiate and set parameters.
+    $instance = new ActionFactory($request, $responder, $driver);
+    $instance->setModel($params['model']);
+    $instance->setResource($params['resource']);
+    
+    //Must be populated with the constructor params correctly.
+    $this->assertEquals($driver, $instance->getDriver());
+    $this->assertEquals($request, $instance->getRequest());
+    $this->assertEquals($responder, $instance->getResponder());
+    
+    //Test getters for set properties.
+    $this->assertEquals($params['model'], $instance->getModel());
+    $this->assertEquals($params['resource'], $instance->getResource());
     
   }
   

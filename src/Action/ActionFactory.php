@@ -1,6 +1,6 @@
 <?php namespace Tuxion\DoctrineRest\Action;
 
-use Tuxion\DoctrineRest\Driver\DriverInterface;
+use Tuxion\DoctrineRest\Domain\Driver\DriverInterface;
 use Tuxion\DoctrineRest\Responder\ResponderInterface;
 use Aura\Web\Request;
 
@@ -12,6 +12,18 @@ class ActionFactory
   protected $request;
   protected $resource;
   protected $responder;
+  
+  public function getRequest(){
+    return $this->request;
+  }
+  
+  public function getResponder(){
+    return $this->responder;
+  }
+  
+  public function getDriver(){
+    return $this->driver;
+  }
   
   public function getModel(){
     return $this->model;
