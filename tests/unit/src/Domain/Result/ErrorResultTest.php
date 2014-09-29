@@ -16,7 +16,7 @@ class ErrorResultTest extends \PHPUnit_Framework_TestCase
   public function testExtendsAbstract()
   {
     
-    $instance = new ErrorResult(array(), new Exception());
+    $instance = new ErrorResult(array());
     $this->assertInstanceOf('Tuxion\DoctrineRest\Domain\Result\AbstractResult', $instance);
     
   }
@@ -29,10 +29,9 @@ class ErrorResultTest extends \PHPUnit_Framework_TestCase
       'body' => 'value'
     );
     
-    $ex = new Exception();
+    $instance = new ErrorResult($body);
     
-    $instance = new ErrorResult($body, $ex);
-    $this->assertSame($body, $instance->getBody());
+    $this->assertSame($body, $instance->getBody()['params']);
     
   }
   
@@ -42,8 +41,42 @@ class ErrorResultTest extends \PHPUnit_Framework_TestCase
     $body = array();
     $ex = new Exception("Error message");
     
-    $instance = new ErrorResult($body, $ex);
+    $instance = new ErrorResult($body);
+    $instance->setException($ex);
+    
     $this->assertSame($ex, $instance->getException());
+    
+  }
+  
+  public function testBodyContents()
+  {
+    
+    $body = array(
+      'sample',
+      'body' => 'value'
+    );
+    
+    $instance = new ErrorResult($body);
+    
+    //Without exception.
+    $output = $instance->getBody();
+    $expect = array(
+      'error' => 'UnknownError',
+      'message' => 'An unknown server error occurred.',
+      'params' => $body
+    );
+    $this->assertSame($expect, $output);
+    
+    //With exception.
+    $ex = new Exception("This is a testing exception.");
+    $instance->setException($ex);
+    $output = $instance->getBody();
+    $expect = array(
+      'error' => 'Exception',
+      'message' => 'This is a testing exception.',
+      'params' => $body
+    );
+    $this->assertSame($expect, $output);
     
   }
   

@@ -3,10 +3,18 @@
 use Aura\Web\Request;
 use Aura\Web\WebFactory;
 use Tuxion\DoctrineRest\Domain\Driver\DummyDriver;
+use Tuxion\DoctrineRest\Responder\StatusCodes;
 use Tuxion\DoctrineRest\Responder\DummyResponder;
 
 class ActionTest extends \PHPUnit_Framework_TestCase
 {
+  
+  protected $webFactory;
+  
+  public function setUp()
+  {
+    $this->webFactory = new WebFactory(array());
+  }
   
   protected function newDriver()
   {
@@ -15,13 +23,17 @@ class ActionTest extends \PHPUnit_Framework_TestCase
   
   protected function newResponder()
   {
-    return new DummyResponder();
+    return new DummyResponder($this->newResponse(), new StatusCodes());
   }
   
   protected function newRequest()
   {
-    $factory = new WebFactory(array());
-    return $factory->newRequest();
+    return $this->webFactory->newRequest();
+  }
+  
+  protected function newResponse()
+  {
+    return $this->webFactory->newResponse();
   }
     
   protected function forgeBody(Request $request, $body)
@@ -174,7 +186,8 @@ class ActionTest extends \PHPUnit_Framework_TestCase
     $this->assertSame($expect, $call);
     
     //Assert the return value.
-    $this->assertSame($body, (array)$response);
+    $this->assertSame($params['responder'], $response);
+    $this->assertInstanceOf('Tuxion\DoctrineRest\Domain\Result\ResultInterface', $response->getResult());
     
   }
   
@@ -209,7 +222,8 @@ class ActionTest extends \PHPUnit_Framework_TestCase
     $this->assertSame($expect, $call);
     
     //Assert the return value.
-    $this->assertSame($body, (array)$response);
+    $this->assertSame($params['responder'], $response);
+    $this->assertInstanceOf('Tuxion\DoctrineRest\Domain\Result\ResultInterface', $response->getResult());
     
   }
   
@@ -238,7 +252,8 @@ class ActionTest extends \PHPUnit_Framework_TestCase
     
     //Assert the return value.
     $expect = $params['driver']->readResponse;
-    $this->assertSame($expect, $response);
+    $this->assertSame($params['responder'], $response);
+    $this->assertInstanceOf('Tuxion\DoctrineRest\Domain\Result\ResultInterface', $response->getResult());
     
   }
   
@@ -266,7 +281,8 @@ class ActionTest extends \PHPUnit_Framework_TestCase
     $this->assertSame($expect, $call);
     
     //Assert the return value.
-    $this->assertEquals(null, $response);
+    $this->assertSame($params['responder'], $response);
+    $this->assertInstanceOf('Tuxion\DoctrineRest\Domain\Result\ResultInterface', $response->getResult());
     
   }
   

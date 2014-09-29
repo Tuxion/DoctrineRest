@@ -4,6 +4,7 @@ use Tuxion\DoctrineRest\RouteAttacher;
 use Tuxion\DoctrineRest\Domain\Driver\DummyDriver;
 use Tuxion\DoctrineRest\Action\Action;
 use Tuxion\DoctrineRest\Action\ActionFactory;
+use Tuxion\DoctrineRest\Responder\StatusCodes;
 use Tuxion\DoctrineRest\Responder\DummyResponder;
 use Aura\Web\WebFactory;
 use Aura\Router\RouterFactory;
@@ -11,28 +12,34 @@ use Aura\Router\RouterFactory;
 class RouteAttacherTest extends \PHPUnit_Framework_TestCase
 {
   
-  protected $factory;
+  protected $routerFactory;
+  protected $webFactory;
   
   protected function setUp()
   {
     parent::setUp();
-    $this->factory = new RouterFactory();
+    $this->webFactory = new WebFactory(array());
+    $this->routerFactory = new RouterFactory();
   }
   
   protected function newRequest()
   {
-    $factory = new WebFactory(array());
-    return $factory->newRequest();
+    return $this->webFactory->newRequest();
+  }
+  
+  protected function newResponse()
+  {
+    return $this->webFactory->newResponse();
   }
   
   protected function newResponder()
   {
-    return new DummyResponder();
+    return new DummyResponder($this->newResponse(), new StatusCodes());
   }
   
   protected function newRouter()
   {
-    return $this->factory->newInstance();
+    return $this->routerFactory->newInstance();
   }
   
   protected function newFactory()

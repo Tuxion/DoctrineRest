@@ -54,7 +54,6 @@ class Action
     $this->responder = $responder;
   }
   
-  #TODO should return responder, not driver response.
   public function __invoke()
   {
     
@@ -63,15 +62,21 @@ class Action
       
       case 'create':
         $data = $this->getRequestContent();
-        return $this->driver->$action($this->model, $data);
+        $result = $this->driver->$action($this->model, $data);
+        $this->responder->setResult($result);
+        return $this->responder;
         
       case 'replace':
         $data = $this->getRequestContent();
-        return $this->driver->$action($this->model, $this->request->params->id, $data);
+        $result = $this->driver->$action($this->model, $this->request->params->id, $data);
+        $this->responder->setResult($result);
+        return $this->responder;
       
       case 'read':
       case 'delete':
-        return $this->driver->$action($this->model, $this->request->params->id);
+        $result = $this->driver->$action($this->model, $this->request->params->id);
+        $this->responder->setResult($result);
+        return $this->responder;
       
       default:
         throw new \Exception("Unknown action '".$action."'");

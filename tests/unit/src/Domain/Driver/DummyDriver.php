@@ -1,5 +1,7 @@
 <?php namespace Tuxion\DoctrineRest\Domain\Driver;
 
+use Tuxion\DoctrineRest\Domain\Result\DummyResult;
+
 class DummyDriver implements DriverInterface
 {
   
@@ -10,10 +12,10 @@ class DummyDriver implements DriverInterface
   {
     
     $this->history = array();
-    $this->readResponse = (object)array(
+    $this->readResponse = new DummyResult(array(
       'id' => 12345,
       'title' => 'TestValue'
-    );
+    ));
     
   }
   
@@ -26,7 +28,7 @@ class DummyDriver implements DriverInterface
       'data' => (array)$data
     );
     
-    return $data;
+    return new DummyResult((array)$data);
     
   }
   
@@ -40,7 +42,7 @@ class DummyDriver implements DriverInterface
       'data' => (array)$data
     );
     
-    return $data;
+    return new DummyResult((array)$data);
     
   }
   
@@ -66,7 +68,7 @@ class DummyDriver implements DriverInterface
       'id' => $id
     );
     
-    return null;
+    return new DummyResult(array('id'=>$id));
     
   }
   

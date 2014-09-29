@@ -1,5 +1,7 @@
 <?php namespace Tuxion\DoctrineRest\Domain\Result;
 
+use \Exception;
+
 class ErrorResult extends AbstractResult
 {
   
@@ -9,10 +11,29 @@ class ErrorResult extends AbstractResult
     return $this->exception;
   }
   
-  public function __construct(array $body, \Exception $exception)
+  public function setException(Exception $value){
+    $this->exception = $value;
+  }
+  
+  public function getBody()
   {
-    parent::__construct($body);
-    $this->exception = $exception;
+    
+    if(isset($this->exception)){
+      $error = basename(get_class($this->exception));
+      $message = $this->exception->getMessage();
+    }
+    
+    else{
+      $error = "UnknownError";
+      $message = "An unknown server error occurred.";
+    }
+    
+    return array(
+      'error' => $error,
+      'message' => $message,
+      'params' => $this->body
+    );
+    
   }
   
 }

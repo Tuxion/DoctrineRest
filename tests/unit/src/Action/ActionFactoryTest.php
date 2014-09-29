@@ -1,11 +1,19 @@
 <?php namespace Tuxion\DoctrineRest\Action;
 
 use Tuxion\DoctrineRest\Domain\Driver\DummyDriver;
+use Tuxion\DoctrineRest\Responder\StatusCodes;
 use Tuxion\DoctrineRest\Responder\DummyResponder;
 use Aura\Web\WebFactory;
 
 class ActionFactoryTest extends \PHPUnit_Framework_TestCase
 {
+  
+  protected $webFactory;
+  
+  public function setUp()
+  {
+    $this->webFactory = new WebFactory(array());
+  }
   
   protected function newDriver()
   {
@@ -14,13 +22,17 @@ class ActionFactoryTest extends \PHPUnit_Framework_TestCase
   
   protected function newResponder()
   {
-    return new DummyResponder();
+    return new DummyResponder($this->newResponse(), new StatusCodes());
   }
   
   protected function newRequest()
   {
-    $factory = new WebFactory(array());
-    return $factory->newRequest();
+    return $this->webFactory->newRequest();
+  }
+  
+  protected function newResponse()
+  {
+    return $this->webFactory->newResponse();
   }
   
   public function testIsCallable()

@@ -1,6 +1,6 @@
 <?php namespace Tuxion\DoctrineRest\Domain\Result;
 
-abstract class AbstractResult
+abstract class AbstractResult implements ResultInterface
 {
   
   protected $body;
