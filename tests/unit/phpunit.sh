@@ -13,9 +13,9 @@ fi
 
 if [ "$mode" != "--coverage" ]
 then
-  phpunit --coverage-html coverage.html
-else
   phpunit
+else
+  phpunit --coverage-html coverage.html
 fi
 status=$?
 
