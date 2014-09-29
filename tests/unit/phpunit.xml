@@ -1,7 +1,12 @@
 <phpunit bootstrap="./bootstrap.php">
-    <testsuites>
-        <testsuite>
-            <directory>./src</directory>
-        </testsuite>
-    </testsuites>
+  <testsuites>
+    <testsuite>
+      <directory>./src</directory>
+    </testsuite>
+  </testsuites>
+  <filter>
+    <whitelist processUncoveredFilesFromWhitelist="true">
+      <directory>../../src</directory>
+    </whitelist>
+  </filter>
 </phpunit>
