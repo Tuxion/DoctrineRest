@@ -2,7 +2,7 @@
 
 use Aura\Web\Request;
 use Aura\Web\WebFactory;
-use Tuxion\DoctrineRest\Driver\DummyDriver;
+use Tuxion\DoctrineRest\Domain\Driver\DummyDriver;
 use Tuxion\DoctrineRest\Responder\DummyResponder;
 
 class ActionTest extends \PHPUnit_Framework_TestCase

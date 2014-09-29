@@ -1,6 +1,6 @@
 <?php namespace Tuxion\DoctrineRest\Action;
 
-use Tuxion\DoctrineRest\Driver\DriverInterface;
+use Tuxion\DoctrineRest\Domain\Driver\DriverInterface;
 use Tuxion\DoctrineRest\Responder\ResponderInterface;
 use Aura\Web\Request;
 

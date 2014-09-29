@@ -1,4 +1,4 @@
-<?php namespace Tuxion\DoctrineRest\Driver;
+<?php namespace Tuxion\DoctrineRest\Domain\Driver;
 
 interface DriverInterface
 {

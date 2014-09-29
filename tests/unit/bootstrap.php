@@ -13,7 +13,8 @@ require dirname(dirname(__DIR__)) . '/autoload.php';
 
 //Dummy classes we need.
 $dummies = array(
-  'src/Driver/DummyDriver.php',
+  'src/Domain/Driver/DummyDriver.php',
+  'src/Domain/Result/DummyResult.php',
   'src/Responder/DummyResponder.php'
 );
 

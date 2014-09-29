@@ -1,7 +1,7 @@
 <?php namespace Tuxion\DoctrineRest;
 
 use Tuxion\DoctrineRest\RouteAttacher;
-use Tuxion\DoctrineRest\Driver\DummyDriver;
+use Tuxion\DoctrineRest\Domain\Driver\DummyDriver;
 use Tuxion\DoctrineRest\Action\Action;
 use Tuxion\DoctrineRest\Action\ActionFactory;
 use Tuxion\DoctrineRest\Responder\DummyResponder;
