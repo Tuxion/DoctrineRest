@@ -30,8 +30,9 @@ class ErrorResultTest extends \PHPUnit_Framework_TestCase
     );
     
     $instance = new ErrorResult($body);
+    $output = $instance->getBody();
     
-    $this->assertSame($body, $instance->getBody()['params']);
+    $this->assertSame($body, $output['params']);
     
   }
   

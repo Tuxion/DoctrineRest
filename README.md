@@ -10,5 +10,6 @@ Links Doctrine models to Aura.Router in a simple CRUD fashion.
 
 * Driver implementation
 * Helper functions for defining the routes -> models
+* Integration (container) testing
 * Implement pre and post methods
 * Implement custom exceptions
