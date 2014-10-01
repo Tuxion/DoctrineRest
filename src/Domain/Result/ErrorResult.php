@@ -19,7 +19,9 @@ class ErrorResult extends AbstractResult
   {
     
     if(isset($this->exception)){
-      $error = basename(get_class($this->exception));
+      $errorClass = get_class($this->exception);
+      $parts = explode('\\', $errorClass);
+      $error = array_pop($parts);
       $message = $this->exception->getMessage();
     }
     

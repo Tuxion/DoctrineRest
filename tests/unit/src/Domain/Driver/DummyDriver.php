@@ -2,11 +2,15 @@
 
 use Tuxion\DoctrineRest\Domain\Result\DummyResult;
 
-class DummyDriver implements DriverInterface
+class DummyDriver extends AbstractDriver
 {
   
   public $history;
   public $readResponse;
+  
+  public function getResultFactory(){
+    return $this->resultFactory;
+  }
   
   public function __construct()
   {
