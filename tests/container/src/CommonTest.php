@@ -9,7 +9,6 @@ class CommonTest extends AbstractContainerTest
   {
     return array(
       'Aura\Web\_Config\Common',
-      'Aura\Web_Kernel\_Config\Common',
       'Tuxion\DoctrineRest\_Config\Test', //This is for including our required stubs.
       'Tuxion\DoctrineRest\_Config\Common',
     );

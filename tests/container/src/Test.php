@@ -12,6 +12,10 @@ class Test extends Config
   public function define(Container $di)
   {
     
+    //Fake the web-kernel, because this requires php 5.4 currently. And we want to unit test for 5.3.
+    $di->set('aura/web-kernel:request', $di->lazyNew('Aura\Web\Request'));
+    $di->set('aura/web-kernel:response', $di->lazyNew('Aura\Web\Response'));
+    
     //Create an entity manager that handles an in-memory sqlite connection.
     $di->set('doctrine/orm:entity-manager', $di->lazy(function(){
       
