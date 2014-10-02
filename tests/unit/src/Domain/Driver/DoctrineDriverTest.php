@@ -11,12 +11,14 @@ class DoctrineDriverTest extends \PHPUnit_Framework_TestCase
   
   protected $manager;
   protected $dummyEntity;
+  protected $unassignableEntity;
   
   public function setUp()
   {
     
     //What model will we use?
     $this->dummyEntity = 'Tuxion\DoctrineRest\Domain\Dummy\DummyEntity';
+    $this->unassignableEntity = 'Tuxion\DoctrineRest\Domain\Dummy\UnassignableEntity';
     
     //Get files from /tests/unit/src/Domain/Dummy
     $isDevMode = true;
@@ -24,7 +26,7 @@ class DoctrineDriverTest extends \PHPUnit_Framework_TestCase
       array(dirname(__DIR__).'/Dummy'), $isDevMode
     );
     
-    //Get DB connection info for /tests/unit/db.sqlite
+    //Get DB connection info for sqlite in-memory temporary databases
     $connection = array(
       'driver'    => 'pdo_sqlite',
       'memory'    => true
@@ -33,10 +35,11 @@ class DoctrineDriverTest extends \PHPUnit_Framework_TestCase
     //Create the entity manager.
     $this->manager = EntityManager::create($connection, $config);
     
-    //Force create schema for DummyEntity
+    //Force create schema for DummyEntity and UnassignableEntity.
     $schemaTool = new SchemaTool($this->manager);
     $schemaTool->createSchema(array(
-      $this->manager->getClassMetadata($this->dummyEntity)
+      $this->manager->getClassMetadata($this->dummyEntity),
+      $this->manager->getClassMetadata($this->unassignableEntity)
     ));
     
   }
@@ -99,6 +102,21 @@ class DoctrineDriverTest extends \PHPUnit_Framework_TestCase
     //We should be missing the title...
     $body = array();
     $result = $driver->create($this->dummyEntity, $body);
+    
+    //Check the result class matches.
+    $this->assertInstanceOf('Tuxion\DoctrineRest\Domain\Result\ErrorResult', $result);
+    
+  }
+  
+  /**
+   * @depends testResultFactorySetter
+   */
+  public function testCreateInvalidModel($driver)
+  {
+    
+    //Otherwise fine body...
+    $body = array('title' => 'Strange class...');
+    $result = $driver->create($this->unassignableEntity, $body);
     
     //Check the result class matches.
     $this->assertInstanceOf('Tuxion\DoctrineRest\Domain\Result\ErrorResult', $result);
@@ -219,7 +237,7 @@ class DoctrineDriverTest extends \PHPUnit_Framework_TestCase
   public function testReplaceNotFoundIdDummy($driver)
   {
     
-    //This unsets the title...
+    //There should be no DummyEntity with this ID.
     $id = 666;
     $body = array('title'=>'Otherwise valid title...');
     $result = $driver->replace($this->dummyEntity, $id, $body);
@@ -235,7 +253,7 @@ class DoctrineDriverTest extends \PHPUnit_Framework_TestCase
   public function testReplaceInvalidIdDummy($driver)
   {
     
-    //This unsets the title...
+    //This is not a valid ID.
     $id = null;
     $body = array('title'=>'Otherwise valid title...');
     $result = $driver->replace($this->dummyEntity, $id, $body);
@@ -245,6 +263,30 @@ class DoctrineDriverTest extends \PHPUnit_Framework_TestCase
     
   }
   
+  /**
+   * @depends testResultFactorySetter
+   */
+  public function testReplaceInvalidModel($driver)
+  {
+    
+    //An entry needs to be forced into the database.
+    //Otherwise we will get a NotFound result.
+    $model = $this->unassignableEntity;
+    $example = new $model();
+    $example->setTitle('Testing entry...');
+    $manager = $driver->getManager();
+    $manager->persist($example);
+    $manager->flush();
+    
+    //Otherwise fine body...
+    $id = $example->getId();
+    $body = array('title' => 'Strange class...');
+    $result = $driver->replace($this->unassignableEntity, $id, $body);
+    
+    //Check the result class matches.
+    $this->assertInstanceOf('Tuxion\DoctrineRest\Domain\Result\ErrorResult', $result);
+    
+  }
   
   /**
    * @depends testResultFactorySetter

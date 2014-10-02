@@ -10,6 +10,10 @@ class DoctrineDriver extends AbstractDriver
   
   protected $manager;
   
+  public function getManager(){
+    return $this->manager;
+  }
+  
   public function __construct(EntityManager $manager)
   {
     $this->manager = $manager;
