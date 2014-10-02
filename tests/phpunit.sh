@@ -2,7 +2,7 @@ mode=$1
 if [ "$mode" != "--watched-mode" ]
 then
   composer self-update
-  cp ../../composer.json .
+  cp ../composer.json .
   if [ -d vendor ]
   then
       composer update
