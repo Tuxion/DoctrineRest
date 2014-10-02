@@ -1,5 +1,6 @@
 <?php namespace Tuxion\DoctrineRest;
 
+use \Exception;
 use Tuxion\DoctrineRest\Action\ActionFactory;
 
 class RouteAttacher
@@ -23,9 +24,17 @@ class RouteAttacher
   
   public function __construct(ActionFactory $actionFactory, $model, $resource)
   {
+    
+    if(!(is_string($model) && strlen($model) > 0))
+      throw new Exception("Model must be a string (class name).");
+    
+    if(!(is_string($resource) && strlen($resource) > 0))
+      throw new Exception("Resource must be a string (URL segment).");
+    
     $this->model = $model;
     $this->resource = $resource;
     $this->actionFactory = $actionFactory;
+    
   }
   
   public function __invoke($router)
