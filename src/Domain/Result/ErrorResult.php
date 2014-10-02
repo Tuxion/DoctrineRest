@@ -11,8 +11,10 @@ class ErrorResult extends AbstractResult
     return $this->exception;
   }
   
-  public function setException(Exception $value){
-    $this->exception = $value;
+  public function __construct(array $body, Exception $exception = null)
+  {
+    parent::__construct($body);
+    $this->exception = $exception;
   }
   
   public function getBody()

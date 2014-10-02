@@ -75,10 +75,10 @@ class StatusCodesTest extends \PHPUnit_Framework_TestCase
    */
   public function testCustomResult($instance)
   {
-    $result = new CustomResult(array());
-    $result->setCode(418);
-    $code = $instance->fromResult($result);
-    $this->assertEquals(418, $code);
+    $code = 418;
+    $result = new CustomResult(array(), $code);
+    $output = $instance->fromResult($result);
+    $this->assertEquals($code, $output);
   }
   
 }

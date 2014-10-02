@@ -36,10 +36,8 @@ class CustomResultTest extends \PHPUnit_Framework_TestCase
   public function testAcceptsCode()
   {
     
-    $instance = new CustomResult(array());
-    
     $code = 418;
-    $instance->setCode($code);
+    $instance = new CustomResult(array(), $code);
     $this->assertSame($code, $instance->getCode());
     
   }

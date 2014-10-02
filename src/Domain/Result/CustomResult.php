@@ -9,8 +9,10 @@ class CustomResult extends AbstractResult
     return $this->code;
   }
   
-  public function setCode($value){
-    $this->code = (int)$value;
+  public function __construct(array $body, $code=null)
+  {
+    parent::__construct($body);
+    $this->code = $code ? (int)$code : null;
   }
   
 }

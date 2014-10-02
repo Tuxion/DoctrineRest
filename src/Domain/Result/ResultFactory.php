@@ -1,6 +1,7 @@
 <?php namespace Tuxion\DoctrineRest\Domain\Result;
 
 use \Exception;
+use \ReflectionClass;
 
 /**
  * A helper factory that creates any available Result class.
@@ -21,18 +22,11 @@ class ResultFactory
   public function __call($name, array $arguments)
   {
     
-    //The first argument is the data to pass to the result class.
-    //Use an empty array by default.
-    $data = isset($arguments[0]) ? $arguments[0] : array();
-    
-    //Check the type of data.
-    if(!is_array($data))
-      throw new Exception("Invalid argument. Only arrays can be passed to this function.");
-    
-    //Create the class and pass it the merged data.
+    //Create the class and pass it the supplied arguments.
     //Note: this will throw an exception if the class does not exist.
-    $class = 'Tuxion\DoctrineRest\Domain\Result\\'.ucfirst($name).'Result';
-    return new $class($data);
+    $className = 'Tuxion\DoctrineRest\Domain\Result\\'.ucfirst($name).'Result';
+    $class = new ReflectionClass($className);
+    return $class->newInstanceArgs($arguments);
     
   }
   

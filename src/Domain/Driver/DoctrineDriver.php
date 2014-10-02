@@ -133,8 +133,7 @@ class DoctrineDriver extends AbstractDriver
   
   protected function handleException(Exception $ex, array $params)
   {
-    $error = $this->resultFactory->error($params);
-    $error->setException($ex);
+    $error = $this->resultFactory->error($params, $ex);
     $this->checkConnection();
     return $error;
   }

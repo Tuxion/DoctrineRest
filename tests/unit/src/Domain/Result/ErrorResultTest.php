@@ -42,8 +42,7 @@ class ErrorResultTest extends \PHPUnit_Framework_TestCase
     $body = array();
     $ex = new Exception("Error message");
     
-    $instance = new ErrorResult($body);
-    $instance->setException($ex);
+    $instance = new ErrorResult($body, $ex);
     
     $this->assertSame($ex, $instance->getException());
     
@@ -57,9 +56,8 @@ class ErrorResultTest extends \PHPUnit_Framework_TestCase
       'body' => 'value'
     );
     
-    $instance = new ErrorResult($body);
-    
     //Without exception.
+    $instance = new ErrorResult($body);
     $output = $instance->getBody();
     $expect = array(
       'error' => 'UnknownError',
@@ -70,7 +68,7 @@ class ErrorResultTest extends \PHPUnit_Framework_TestCase
     
     //With exception.
     $ex = new Exception("This is a testing exception.");
-    $instance->setException($ex);
+    $instance = new ErrorResult($body, $ex);
     $output = $instance->getBody();
     $expect = array(
       'error' => 'Exception',

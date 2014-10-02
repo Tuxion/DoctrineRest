@@ -4,6 +4,5 @@ interface ResultInterface
 {
   
   public function getBody();
-  public function __construct(array $body);
   
 }
