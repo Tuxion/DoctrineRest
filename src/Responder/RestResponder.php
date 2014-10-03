@@ -40,10 +40,13 @@ class RestResponder implements ResponderInterface
     $code = $this->statusCodes->fromResult($this->result);
     $this->response->status->set($code);
     
-    $json = json_encode($this->result->getBody());
-    $this->response->content->set($json);
-    $this->response->content->setType('application/json');
-    $this->response->content->setCharset('utf-8');
+    $body = $this->result->getBody();
+    if(!is_null($body)){
+      $json = json_encode($this->result->getBody());
+      $this->response->content->set($json);
+      $this->response->content->setType('application/json');
+      $this->response->content->setCharset('utf-8');
+    }
     
     return $this->response;
     

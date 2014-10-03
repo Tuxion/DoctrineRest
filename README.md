@@ -8,6 +8,8 @@ Links Doctrine models to Aura.Router in a simple CRUD fashion.
 
 ### TODO
 
+* Test for empty bodies at action.
+* Test for null body in deleted results.
 * Explicit test for ResultFactory.
 * Helper functions for defining the routes -> models
 * Integration (container) testing
