@@ -92,10 +92,15 @@ class Action
     $content = $this->request->content;
     
     if($content->getType() !== 'application/json'){
-      throw new \Exception("Invalid Content-Type, must be 'application/json'.");
+      throw new Exception("Invalid Content-Type, must be 'application/json'.");
     }
     
-    return $content->get();
+    $content = json_decode($content->getRaw(), true);
+    
+    if(empty($content))
+      throw new Exception("Empty body while a JSON object was expected.");
+    
+    return $content;
     
   }
   
