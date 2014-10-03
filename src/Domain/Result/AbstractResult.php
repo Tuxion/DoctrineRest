@@ -9,7 +9,7 @@ abstract class AbstractResult implements ResultInterface
     return $this->body;
   }
   
-  public function __construct(array $body)
+  public function __construct($body)
   {
     $this->body = $body;
   }

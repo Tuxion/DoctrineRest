@@ -34,7 +34,7 @@ class DoctrineDriver extends AbstractDriver
       $this->manager->persist($object);
       $this->manager->flush();
       
-      return $this->resultFactory->created(array($object));
+      return $this->resultFactory->created($object);
       
     }
     
@@ -63,7 +63,7 @@ class DoctrineDriver extends AbstractDriver
       $this->manager->persist($object);
       $this->manager->flush();
       
-      return $this->resultFactory->replaced(array($object));
+      return $this->resultFactory->replaced($object);
       
     }
     
@@ -84,7 +84,7 @@ class DoctrineDriver extends AbstractDriver
         return $this->resultFactory->notFound(array('id'=>$id));
       }
       
-      return $this->resultFactory->found(array($object));
+      return $this->resultFactory->found($object);
       
     }
     
@@ -108,7 +108,7 @@ class DoctrineDriver extends AbstractDriver
       $this->manager->remove($object);
       $this->manager->flush();
       
-      return $this->resultFactory->deleted(array());
+      return $this->resultFactory->deleted(null);
       
     }
     
@@ -135,9 +135,9 @@ class DoctrineDriver extends AbstractDriver
     
   }
   
-  protected function handleException(Exception $ex, array $params)
+  protected function handleException(Exception $ex, $params)
   {
-    $error = $this->resultFactory->error($params, $ex);
+    $error = $this->resultFactory->error((array)$params, $ex);
     $this->checkConnection();
     return $error;
   }
