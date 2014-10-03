@@ -19,6 +19,10 @@ class Common extends Config
       'manager' => $di->lazyGet('doctrine/orm:entity-manager')
     );
     
+    $di->setters['Tuxion\DoctrineRest\Domain\Driver\AbstractDriver'] = array(
+      'setResultFactory' => $di->lazyNew('Tuxion\DoctrineRest\Domain\Result\ResultFactory')
+    );
+    
     $di->params['Tuxion\DoctrineRest\Responder\RestResponder'] = array(
       'response' => $di->lazyGet('aura/web-kernel:response'),
       'statusCodes' => $di->lazyNew('Tuxion\DoctrineRest\Responder\StatusCodes')
