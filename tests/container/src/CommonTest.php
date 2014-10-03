@@ -203,12 +203,13 @@ class CommonTest extends AbstractContainerTest
   {
     
     $di = $this->di;
+    $model = $this->dummyEntity;
     $router = $di->newInstance('Aura\Router\Router');
-    $router->attach($prefix, "/$prefix", function($router)use($di){
+    $router->attach($prefix, "/$prefix", function($router)use($di, $model){
       
       $name = 'instantiation-dummy';
       $attacher = $di->newInstance('Tuxion\DoctrineRest\RouteAttacher', array(
-        'model' => $this->dummyEntity,
+        'model' => $model,
         'resource' => $name
       ));
       $router->attach($name, "/$name", $attacher);
