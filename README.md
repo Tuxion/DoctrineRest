@@ -8,6 +8,7 @@ Links Doctrine models to Aura.Router in a simple CRUD fashion.
 
 ### TODO
 
+* Consider a PHP 5.3 compatible way of exposing JSON body rather than `\JsonSerialize`.
 * Test for empty bodies at action.
 * Test for null body in deleted results.
 * Explicit test for ResultFactory.
