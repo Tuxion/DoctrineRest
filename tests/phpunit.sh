@@ -50,7 +50,7 @@ while getopts "hc:dsp" opt; do
       deploy=1
       ;;
     s)
-      status=1
+      suppress_status=1
       ;;
     c)
       coverage=1
