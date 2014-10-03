@@ -1,11 +1,12 @@
 <?php namespace Tuxion\DoctrineRest\Domain\Dummy;
 
+use \JsonSerializable;
 use Tuxion\DoctrineRest\Domain\AssignableEntityInterface;
 
 /**
  * @Entity @Table(name="dummy_table")
  */
-class DummyEntity implements AssignableEntityInterface
+class DummyEntity implements AssignableEntityInterface, JsonSerializable
 {
   
   /** @Id @Column(type="integer") @GeneratedValue **/
@@ -34,6 +35,14 @@ class DummyEntity implements AssignableEntityInterface
         $this->$setter($value);
       }
     }
+  }
+  
+  public function jsonSerialize()
+  {
+    return array(
+      'id' => $this->id,
+      'title' => $this->title
+    );
   }
   
 }

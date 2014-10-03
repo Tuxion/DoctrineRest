@@ -40,6 +40,13 @@ class Test extends Config
   public function modify(Container $di)
   {
     
+    //Force create schema for DummyEntity and UnassignableEntity.
+    $manager = $di->get('doctrine/orm:entity-manager');
+    $schemaTool = new SchemaTool($manager);
+    $schemaTool->createSchema(array(
+      $manager->getClassMetadata('Tuxion\DoctrineRest\Domain\Dummy\DummyEntity')
+    ));
+    
   }
   
 }
