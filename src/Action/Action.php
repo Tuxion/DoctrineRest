@@ -1,8 +1,9 @@
 <?php namespace Tuxion\DoctrineRest\Action;
 
+use \Exception;
+use Aura\Web\Request;
 use Tuxion\DoctrineRest\Domain\Driver\DriverInterface;
 use Tuxion\DoctrineRest\Responder\ResponderInterface;
-use Aura\Web\Request;
 
 class Action
 {
@@ -68,18 +69,18 @@ class Action
         
       case 'replace':
         $data = $this->getRequestContent();
-        $result = $this->driver->$action($this->model, $this->request->params->id, $data);
+        $result = $this->driver->$action($this->model, $this->request->params['id'], $data);
         $this->responder->setResult($result);
         return $this->responder;
       
       case 'read':
       case 'delete':
-        $result = $this->driver->$action($this->model, $this->request->params->id);
+        $result = $this->driver->$action($this->model, $this->request->params['id']);
         $this->responder->setResult($result);
         return $this->responder;
       
       default:
-        throw new \Exception("Unknown action '".$action."'");
+        throw new Exception("Unknown action '".$action."'");
       
     }
     

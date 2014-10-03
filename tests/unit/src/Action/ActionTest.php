@@ -200,7 +200,7 @@ class ActionTest extends \PHPUnit_Framework_TestCase
     
     //Set the id to request.
     $id = '54321';
-    $params['request']->params->id = $id;
+    $params['request']->params->set(array('id' => $id));
     
     //Set the request body.
     $body = array(
@@ -236,7 +236,7 @@ class ActionTest extends \PHPUnit_Framework_TestCase
     
     //Set the id to request.
     $id = '54321';
-    $params['request']->params->id = $id;
+    $params['request']->params->set(array('id' => $id));
     
     //Run the action.
     $response = $instance();
@@ -266,7 +266,7 @@ class ActionTest extends \PHPUnit_Framework_TestCase
     
     //Set the id to request.
     $id = '54321';
-    $params['request']->params->id = $id;
+    $params['request']->params->set(array('id' => $id));
     
     //Run the action.
     $response = $instance();
