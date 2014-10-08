@@ -8,6 +8,7 @@ use Aura\Di\_Config\AbstractContainerTest;
 class CommonTest extends AbstractContainerTest
 {
   
+  protected $router;
   protected $dummyEntity = 'Tuxion\DoctrineRest\Domain\Dummy\DummyEntity';
   
   protected function getConfigClasses()
@@ -19,16 +20,6 @@ class CommonTest extends AbstractContainerTest
     );
   }
   
-  public function provideGet()
-  {
-    
-    //Do this to silence the skip.
-    return array(
-      array('doctrine/orm:entity-manager', 'Doctrine\ORM\EntityManager')
-    );
-    
-  }
-  
   public function provideNewInstance()
   {
     return array(
@@ -37,11 +28,18 @@ class CommonTest extends AbstractContainerTest
       array('Tuxion\DoctrineRest\Domain\Result\ResultFactory'),
       array('Tuxion\DoctrineRest\Responder\RestResponder'),
       array('Tuxion\DoctrineRest\Responder\StatusCodes'),
-      array('Tuxion\DoctrineRest\RouteAttacher', array(
+      array('Tuxion\DoctrineRest\Mapper\Resource', array(
+        'actions' => '*',
         'model' => $this->dummyEntity,
         'resource' => 'instantiation-dummy'
       ))
     );
+  }
+  
+  public function setUp()
+  {
+    parent::setUp();
+    $this->router = $this->generateRoutes();
   }
   
   public function testGetDummyRequest()
@@ -53,7 +51,7 @@ class CommonTest extends AbstractContainerTest
     $output = $driver->create($this->dummyEntity, $body);
     
     //Go through a request.
-    $router = $this->generateRoutes();
+    $router = $this->router;
     $response = $this->executeFakeRequest($router, 'GET', '/rest/instantiation-dummy/1');
     
     //Assert the response.
@@ -77,7 +75,7 @@ class CommonTest extends AbstractContainerTest
   {
     
     //Go through a request.
-    $router = $this->generateRoutes();
+    $router = $this->router;
     $body = json_encode(array(
       'title' => 'Testing 4, 5, 6...'
     ));
@@ -108,7 +106,7 @@ class CommonTest extends AbstractContainerTest
     $output = $driver->create($this->dummyEntity, $body);
     
     //Go through a request.
-    $router = $this->generateRoutes();
+    $router = $this->router;
     $id = $output->getBody()->getId();
     $body = json_encode(array(
       'title' => 'Testing 7, 8, 9...'
@@ -140,7 +138,7 @@ class CommonTest extends AbstractContainerTest
     $output = $driver->create($this->dummyEntity, $body);
     
     //Go through a request.
-    $router = $this->generateRoutes();
+    $router = $this->router;
     $id = $output->getBody()->getId();
     $response = $this->executeFakeRequest($router, 'DELETE', '/rest/instantiation-dummy/'.$id);
     
@@ -199,24 +197,20 @@ class CommonTest extends AbstractContainerTest
     
   }
   
-  protected function generateRoutes($prefix='rest')
+  protected function generateRoutes()
   {
     
     $di = $this->di;
     $model = $this->dummyEntity;
-    $router = $di->newInstance('Aura\Router\Router');
-    $router->attach($prefix, "/$prefix", function($router)use($di, $model){
-      
-      $name = 'instantiation-dummy';
-      $attacher = $di->newInstance('Tuxion\DoctrineRest\RouteAttacher', array(
-        'model' => $model,
-        'resource' => $name
-      ));
-      $router->attach($name, "/$name", $attacher);
-      
-    });
+    $name = 'instantiation-dummy';
     
-    return $router;
+    $mapper = $di->newInstance('Tuxion\DoctrineRest\Mapper\ResourceMapper', array(
+      'routePrefix' => '/rest'
+    ));
+    
+    $mapper->resource('*', $name, $model);
+    
+    return $mapper->getRouter();
     
   }
   

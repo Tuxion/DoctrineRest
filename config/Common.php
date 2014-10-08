@@ -20,7 +20,7 @@ class Common extends Config
     );
     
     $di->params['Tuxion\DoctrineRest\Domain\Driver\DoctrineDriver'] = array(
-      'manager' => $di->lazyGet('doctrine/orm:entity-manager')
+      'manager' => $di->lazyValue('Tuxion/DoctrineRest:entityManager')
     );
     
     $di->setters['Tuxion\DoctrineRest\Domain\Driver\AbstractDriver'] = array(
@@ -32,6 +32,16 @@ class Common extends Config
       'statusCodes' => $di->lazyNew('Tuxion\DoctrineRest\Responder\StatusCodes')
     );
     
+    $di->params['Tuxion\DoctrineRest\Mapper\ResourceFactory'] = array(
+      'actionFactory' => $di->lazyNew('Tuxion\DoctrineRest\Action\ActionFactory')
+    );
+    
+    $di->params['Tuxion\DoctrineRest\Mapper\ResourceMapper'] = array(
+      'resourceFactory' => $di->lazyNew('Tuxion\DoctrineRest\Mapper\ResourceFactory'),
+      'routers' => $di->lazyGet('aura/web-kernel:router'),
+      'routePrefix' => $di->lazyValue('Tuxion/DoctrineRest:routePrefix')
+    );
+      
   }
   
   public function modify(Container $di)
