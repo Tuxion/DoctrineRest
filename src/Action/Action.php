@@ -1,6 +1,7 @@
 <?php namespace Tuxion\DoctrineRest\Action;
 
 use \Exception;
+use Tuxion\DoctrineRest\Domain\Composite\CompositeCallInterface;
 
 class Action
 {
@@ -8,6 +9,8 @@ class Action
   protected $model;
   protected $action;
   protected $environment;
+  protected $compositeCall;
+  protected $knownActions;
   
   public function getEnvironment(){
     return $this->environment;
@@ -23,15 +26,25 @@ class Action
   
   public function __construct(
     Environment $environment,
+    CompositeCallInterface $compositeCall,
     $action,
-    $model)
-  {
+    $model
+  ){
+    
     $this->model = $model;
     $this->action = $action;
     $this->environment = $environment;
+    $this->compositeCall = $compositeCall;
+    $this->knownActions = array('create', 'read', 'replace', 'delete');
+    
+    if(!in_array($action, $this->knownActions))
+      throw new Exception("Unknown action '".$action."'");
+    
+    $this->compositeCall->setMethod(array($this, 'performAction'));
+    
   }
   
-  public function __invoke()
+  public function performAction()
   {
     
     $action = $this->action;
@@ -39,29 +52,32 @@ class Action
       
       case 'create':
         $data = $this->getRequestContent();
-        $result = $this->environment->getDriver()->$action($this->model, $data);
-        $responder = $this->environment->getResponder();
-        $responder->setResult($result);
-        return $responder;
+        return $this->environment->getDriver()->$action($this->model, $data);
         
       case 'replace':
+        $id = $this->environment->getRequest()->params['id'];
         $data = $this->getRequestContent();
-        $result = $this->environment->getDriver()->$action($this->model, $this->environment->getRequest()->params['id'], $data);
-        $responder = $this->environment->getResponder();
-        $responder->setResult($result);
-        return $responder;
-      
+        return $this->environment->getDriver()->$action($this->model, $id, $data);
+        
       case 'read':
       case 'delete':
-        $result = $this->environment->getDriver()->$action($this->model, $this->environment->getRequest()->params['id']);
-        $responder = $this->environment->getResponder();
-        $responder->setResult($result);
-        return $responder;
-      
+        $id = $this->environment->getRequest()->params['id'];
+        return $this->environment->getDriver()->$action($this->model, $id);
+        
       default:
         throw new Exception("Unknown action '".$action."'");
       
     }
+    
+  }
+  
+  public function __invoke()
+  {
+    
+    $result = $this->compositeCall->__invoke();
+    $responder = $this->environment->getResponder();
+    $responder->setResult($result);
+    return $responder;
     
   }
   

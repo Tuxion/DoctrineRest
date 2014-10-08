@@ -2,6 +2,7 @@
 
 use Tuxion\DoctrineRest\Mapper\ResourceMapper;
 use Tuxion\DoctrineRest\Domain\Driver\DummyDriver;
+use Tuxion\DoctrineRest\Domain\Composite\CompositeCallFactory;
 use Tuxion\DoctrineRest\Responder\StatusCodes;
 use Tuxion\DoctrineRest\Responder\DummyResponder;
 use Tuxion\DoctrineRest\Action\ActionFactory;
@@ -28,7 +29,7 @@ class ResourceMapperTest extends \PHPUnit_Framework_TestCase
     
     $prefix = '/api/v1';
     $router = $this->newRouter();
-    $factory = new ResourceFactory($this->newActionFactory());
+    $factory = new ResourceFactory($this->newActionFactory(), $this->newCompositeCallFactory());
     
     $instance = new ResourceMapper($factory, $router, $prefix);
     
@@ -54,7 +55,7 @@ class ResourceMapperTest extends \PHPUnit_Framework_TestCase
   
   protected function newInstance()
   {
-    $factory = new ResourceFactory($this->newActionFactory());
+    $factory = new ResourceFactory($this->newActionFactory(), $this->newCompositeCallFactory());
     $router = $this->newRouter();
     $prefix = '/api/v1';
     return new ResourceMapper($factory, $router, $prefix);
@@ -65,6 +66,11 @@ class ResourceMapperTest extends \PHPUnit_Framework_TestCase
     return new ActionFactory(
       $this->newEnvironment()
     );
+  }
+  
+  protected function newCompositeCallFactory()
+  {
+    return new CompositeCallFactory();
   }
   
   protected function newEnvironment()

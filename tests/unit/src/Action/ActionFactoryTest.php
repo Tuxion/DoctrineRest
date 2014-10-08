@@ -1,9 +1,11 @@
 <?php namespace Tuxion\DoctrineRest\Action;
 
+use \ReflectionProperty;
+use Aura\Web\WebFactory;
 use Tuxion\DoctrineRest\Domain\Driver\DummyDriver;
+use Tuxion\DoctrineRest\Domain\Composite\CompositeCall;
 use Tuxion\DoctrineRest\Responder\StatusCodes;
 use Tuxion\DoctrineRest\Responder\DummyResponder;
-use Aura\Web\WebFactory;
 
 class ActionFactoryTest extends \PHPUnit_Framework_TestCase
 {
@@ -42,6 +44,11 @@ class ActionFactoryTest extends \PHPUnit_Framework_TestCase
   protected function newResponse()
   {
     return $this->webFactory->newResponse();
+  }
+  
+  protected function newCompositeCall()
+  {
+    return new CompositeCall();
   }
   
   public function testIsCallable()
@@ -91,19 +98,29 @@ class ActionFactoryTest extends \PHPUnit_Framework_TestCase
     );
     
     $environment = $this->newEnvironment();
+    $compositeCall = $this->newCompositeCall();
     
     //Instantiate and set parameters.
     $instance = new ActionFactory($environment);
     $instance->setModel($params['model']);
     
     //Invoke the factory.
-    $output = $instance($params['action']);
+    $output = $instance(
+      $compositeCall,
+      $params['action']
+    );
     
     //Must be an Action.
     $this->assertInstanceOf('Tuxion\DoctrineRest\Action\Action', $output);
     
     //Must be populated with the environment correctly.
     $this->assertEquals($environment, $output->getEnvironment());
+    
+    //Use reflection to find out the same for the protected composite call.
+    $raw = new ReflectionProperty($output, 'compositeCall');
+    $raw->setAccessible(true);
+    $this->assertEquals($compositeCall, $raw->getValue($output));
+    $raw->setAccessible(false);
     
     //Must be populated with the params correctly.
     $this->assertEquals($params['model'], $output->getModel());

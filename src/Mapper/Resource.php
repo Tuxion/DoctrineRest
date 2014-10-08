@@ -2,6 +2,7 @@
 
 use \Exception;
 use Tuxion\DoctrineRest\Action\ActionFactory;
+use Tuxion\DoctrineRest\Domain\Composite\CompositeCallFactory;
 
 class Resource
 {
@@ -11,6 +12,11 @@ class Resource
   protected $actions;
   protected $befores;
   protected $afters;
+  protected $compositeCallFactory;
+  
+  public function getCompositeCallFactory(){
+    return $this->compositeCallFactory;
+  }
   
   public function getAfters(){
     return $this->afters;
@@ -32,7 +38,7 @@ class Resource
     return $this->actionFactory;
   }
   
-  public function __construct(ActionFactory $actionFactory, $actions, $model)
+  public function __construct(ActionFactory $actionFactory, CompositeCallFactory $compositeCallFactory, $actions, $model)
   {
     
     if(!(is_string($model) && strlen($model) > 0))
@@ -40,6 +46,7 @@ class Resource
     
     $this->model = $model;
     $this->actionFactory = $actionFactory;
+    $this->compositeCallFactory = $compositeCallFactory;
     
     $this->actions = $this->normalizeActions($actions);
     
@@ -94,27 +101,47 @@ class Resource
       'id' => '\d+'
     ));
     
-    //action factory, action params
-    $factory = $this->actionFactory;
-    $factory->setModel($this->model);
+    //Set the model for when we create our action objects.
+    $this->actionFactory->setModel($this->model);
     
     //Add routes.
-    if($this->hasAction('create')){
-      $router->addPost('create', '')->addValues(array('action'=>$factory('create')));
+    $action = 'create';
+    if($this->hasAction($action)){
+      $router->addPost($action, '')->addValues(array('action'=>$this->createAction($action)));
     }
     
-    if($this->hasAction('read')){
-      $router->addGet('read', '/{id}')->addValues(array('action'=>$factory('read')));
+    $action = 'read';
+    if($this->hasAction($action)){
+      $router->addGet($action, '/{id}')->addValues(array('action'=>$this->createAction($action)));
     }
     
-    if($this->hasAction('replace')){
-      $router->addPut('replace', '/{id}')->addValues(array('action'=>$factory('replace')));
+    $action = 'replace';
+    if($this->hasAction($action)){
+      $router->addPut($action, '/{id}')->addValues(array('action'=>$this->createAction($action)));
     }
     
-    if($this->hasAction('delete')){
-      $router->addDelete('delete', '/{id}')->addValues(array('action'=>$factory('delete')));
+    $action = 'delete';
+    if($this->hasAction($action)){
+      $router->addDelete($action, '/{id}')->addValues(array('action'=>$this->createAction($action)));
     }
     
+  }
+  
+  protected function createAction($action)
+  {
+    
+    return $this->actionFactory->__invoke(
+      $this->createCompositeCall($action),
+      $action
+    );
+  }
+  
+  protected function createCompositeCall($action)
+  {
+    $call = $this->compositeCallFactory->__invoke();
+    $call->setBefores($this->befores[$action]);
+    $call->setAfters($this->afters[$action]);
+    return $call;
   }
   
   protected function normalizeActions($actions)

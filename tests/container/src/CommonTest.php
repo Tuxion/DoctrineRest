@@ -24,10 +24,16 @@ class CommonTest extends AbstractContainerTest
   {
     return array(
       array('Tuxion\DoctrineRest\Action\ActionFactory'),
+      array('Tuxion\DoctrineRest\Domain\Composite\CompositeCall'),
+      array('Tuxion\DoctrineRest\Domain\Composite\CompositeCallFactory'),
       array('Tuxion\DoctrineRest\Domain\Driver\DoctrineDriver'),
       array('Tuxion\DoctrineRest\Domain\Result\ResultFactory'),
       array('Tuxion\DoctrineRest\Responder\RestResponder'),
       array('Tuxion\DoctrineRest\Responder\StatusCodes'),
+      array('Tuxion\DoctrineRest\Mapper\ResourceMapper', array(
+        'routePrefix' => '/rest'
+      )),
+      array('Tuxion\DoctrineRest\Mapper\ResourceFactory'),
       array('Tuxion\DoctrineRest\Mapper\Resource', array(
         'actions' => '*',
         'model' => $this->dummyEntity,

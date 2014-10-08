@@ -33,7 +33,8 @@ class Common extends Config
     );
     
     $di->params['Tuxion\DoctrineRest\Mapper\ResourceFactory'] = array(
-      'actionFactory' => $di->lazyNew('Tuxion\DoctrineRest\Action\ActionFactory')
+      'actionFactory' => $di->lazyNew('Tuxion\DoctrineRest\Action\ActionFactory'),
+      'compositeCallFactory' => $di->lazyNew('Tuxion\DoctrineRest\Domain\Composite\CompositeCallFactory')
     );
     
     $di->params['Tuxion\DoctrineRest\Mapper\ResourceMapper'] = array(

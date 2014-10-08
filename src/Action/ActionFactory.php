@@ -1,5 +1,7 @@
 <?php namespace Tuxion\DoctrineRest\Action;
 
+use Tuxion\DoctrineRest\Domain\Composite\CompositeCallInterface;
+
 class ActionFactory
 {
   
@@ -23,10 +25,11 @@ class ActionFactory
     $this->environment = $environment;
   }
   
-  public function __invoke($action)
+  public function __invoke(CompositeCallInterface $compositeCall, $action)
   {
     return new Action(
       $this->environment,
+      $compositeCall,
       $action,
       $this->model
     );

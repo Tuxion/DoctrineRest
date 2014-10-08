@@ -3,6 +3,7 @@
 use Aura\Web\Request;
 use Aura\Web\WebFactory;
 use Tuxion\DoctrineRest\Domain\Driver\DummyDriver;
+use Tuxion\DoctrineRest\Domain\Composite\CompositeCall;
 use Tuxion\DoctrineRest\Responder\StatusCodes;
 use Tuxion\DoctrineRest\Responder\DummyResponder;
 
@@ -44,7 +45,12 @@ class ActionTest extends \PHPUnit_Framework_TestCase
   {
     return $this->webFactory->newResponse();
   }
-    
+  
+  protected function newCompositeCall()
+  {
+    return new CompositeCall();
+  }
+  
   protected function forgeBody(Request $request, $body)
   {
     $this->forgeRawBody($request, json_encode($body), 'application/json');
@@ -77,6 +83,7 @@ class ActionTest extends \PHPUnit_Framework_TestCase
     $params = array_merge(
       array(
         'environment' => $this->newEnvironment(),
+        'compositeCall' => $this->newCompositeCall(),
         'action' => 'read',
         'model' => 'TestModel'
       ),
@@ -86,6 +93,7 @@ class ActionTest extends \PHPUnit_Framework_TestCase
     //Create the action with these parameters.
     return new Action(
       $params['environment'],
+      $params['compositeCall'],
       $params['action'],
       $params['model']
     );
@@ -123,17 +131,15 @@ class ActionTest extends \PHPUnit_Framework_TestCase
   public function testUnknownMethod()
   {
     
-    //Create an instance.
     $params = array('action' => 'this-action-does-not-exist');
-    $instance = $this->newInstance($params);
     
     //Define the exception we're expecting.
     $this->setExpectedException(
       'Exception', "Unknown action '{$params['action']}'"
     );
     
-    //Trigger the exception.
-    $instance();
+    //Create an instance.
+    $instance = $this->newInstance($params);
     
   }
   
@@ -150,13 +156,18 @@ class ActionTest extends \PHPUnit_Framework_TestCase
     );
     $this->forgeRawBody($params['environment']->getRequest(), json_encode($body), 'application/not-json-at-all');
     
+    //Should return an error result.
+    $response = $instance();
+    
+    //Assert the return value.
+    $this->assertSame($params['environment']->getResponder(), $response);
+    $this->assertInstanceOf('Tuxion\DoctrineRest\Domain\Result\ErrorResult', $response->getResult());
+    
     //Define the exception we're expecting.
     $this->setExpectedException(
       'Exception', "Invalid Content-Type, must be 'application/json'"
     );
-    
-    //Trigger the exception.
-    $instance();
+    throw $response->getResult()->getException();
     
   }
   
@@ -188,7 +199,6 @@ class ActionTest extends \PHPUnit_Framework_TestCase
     //Assert the return value.
     $this->assertSame($params['environment']->getResponder(), $response);
     $this->assertInstanceOf('Tuxion\DoctrineRest\Domain\Result\ResultInterface', $response->getResult());
-    
   }
   
   public function testReplaceAction()

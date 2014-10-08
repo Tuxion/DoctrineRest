@@ -2,6 +2,7 @@
 
 use Tuxion\DoctrineRest\Mapper\Resource;
 use Tuxion\DoctrineRest\Domain\Driver\DummyDriver;
+use Tuxion\DoctrineRest\Domain\Composite\CompositeCallFactory;
 use Tuxion\DoctrineRest\Action\Environment;
 use Tuxion\DoctrineRest\Action\Action;
 use Tuxion\DoctrineRest\Action\ActionFactory;
@@ -51,11 +52,16 @@ class ResourceTest extends \PHPUnit_Framework_TestCase
     );
   }
   
-  protected function newFactory()
+  protected function newActionFactory()
   {
     return new ActionFactory(
       $this->newEnvironment()
     );
+  }
+  
+  protected function newCompositeCallFactory()
+  {
+    return new CompositeCallFactory();
   }
   
   public function testIsCallable()
@@ -66,7 +72,8 @@ class ResourceTest extends \PHPUnit_Framework_TestCase
     
     //Create the route attacher.
     $instance = new Resource(
-      $this->newFactory(),
+      $this->newActionFactory(),
+      $this->newCompositeCallFactory(),
       '*',
       'TestModel',
       'test-resource'
@@ -88,16 +95,18 @@ class ResourceTest extends \PHPUnit_Framework_TestCase
         'replace' => true,
         'delete' => false
       ),
-      'factory' => $this->newFactory()
+      'actionFactory' => $this->newActionFactory(),
+      'compositeCallFactory' => $this->newCompositeCallFactory()
     );
     
     //Create the route attacher.
-    $instance = new Resource($args['factory'], $args['actions'], $args['model']);
+    $instance = new Resource($args['actionFactory'], $args['compositeCallFactory'], $args['actions'], $args['model']);
     
     //See if the properties are set correctly.
     $this->assertSame($args['model'], $instance->getModel());
     $this->assertSame($args['actions'], $instance->getActions());
-    $this->assertSame($args['factory'], $instance->getActionFactory());
+    $this->assertSame($args['actionFactory'], $instance->getActionFactory());
+    $this->assertSame($args['compositeCallFactory'], $instance->getCompositeCallFactory());
     
     //Test the befores and afters have an empty array.
     $expect = array(
@@ -116,7 +125,8 @@ class ResourceTest extends \PHPUnit_Framework_TestCase
     
     //Create the route attacher.
     $instance = new Resource(
-      $this->newFactory(),
+      $this->newActionFactory(),
+      $this->newCompositeCallFactory(),
       '*',
       'TestModel',
       'test-resource'
@@ -137,7 +147,8 @@ class ResourceTest extends \PHPUnit_Framework_TestCase
     
     //Create the route attacher.
     $instance = new Resource(
-      $this->newFactory(),
+      $this->newActionFactory(),
+      $this->newCompositeCallFactory(),
       '*',
       'TestModel',
       'test-resource'
@@ -159,7 +170,7 @@ class ResourceTest extends \PHPUnit_Framework_TestCase
   {
     
     $name = 'test-resource';
-    $resource = new Resource($this->newFactory(), '*', $name, 'TestModel');
+    $resource = new Resource($this->newActionFactory(), $this->newCompositeCallFactory(), '*', $name, 'TestModel');
     
     $expect = array(
       'create' => true,
@@ -176,7 +187,7 @@ class ResourceTest extends \PHPUnit_Framework_TestCase
   {
     
     $name = 'test-resource';
-    $resource = new Resource($this->newFactory(), 'GET|PUT', $name, 'TestModel');
+    $resource = new Resource($this->newActionFactory(), $this->newCompositeCallFactory(), 'GET|PUT', $name, 'TestModel');
     
     $expect = array(
       'create' => false,
@@ -193,7 +204,7 @@ class ResourceTest extends \PHPUnit_Framework_TestCase
   {
     
     $name = 'test-resource';
-    $resource = new Resource($this->newFactory(), array('create', 'delete'), $name, 'TestModel');
+    $resource = new Resource($this->newActionFactory(), $this->newCompositeCallFactory(), array('create', 'delete'), $name, 'TestModel');
     
     $expect = array(
       'create' => true,
@@ -210,7 +221,7 @@ class ResourceTest extends \PHPUnit_Framework_TestCase
   {
     
     $name = 'test-resource';
-    $resource = new Resource($this->newFactory(), 'create|read', $name, 'TestModel');
+    $resource = new Resource($this->newActionFactory(), $this->newCompositeCallFactory(), 'create|read', $name, 'TestModel');
     
     $expect = array(
       'create' => true,
@@ -232,7 +243,7 @@ class ResourceTest extends \PHPUnit_Framework_TestCase
       'create' => true,
       'delete' => false
     );
-    $resource = new Resource($this->newFactory(), $input, $name, 'TestModel');
+    $resource = new Resource($this->newActionFactory(), $this->newCompositeCallFactory(), $input, $name, 'TestModel');
     
     $expect = array(
       'create' => true,
@@ -256,7 +267,7 @@ class ResourceTest extends \PHPUnit_Framework_TestCase
       'read' => true,
       'replace' => false
     );
-    $resource = new Resource($this->newFactory(), $input, $name, 'TestModel');
+    $resource = new Resource($this->newActionFactory(), $this->newCompositeCallFactory(), $input, $name, 'TestModel');
     
     $expect = array(
       'create' => true,
@@ -273,7 +284,7 @@ class ResourceTest extends \PHPUnit_Framework_TestCase
   {
     
     $name = 'test-resource';
-    $resource = new Resource($this->newFactory(), '*', $name, 'TestModel');
+    $resource = new Resource($this->newActionFactory(), $this->newCompositeCallFactory(), '*', $name, 'TestModel');
     
     $method1 = function(){};
     $method2 = function(){};
@@ -300,7 +311,7 @@ class ResourceTest extends \PHPUnit_Framework_TestCase
   {
     
     $name = 'test-resource';
-    $resource = new Resource($this->newFactory(), '*', $name, 'TestModel');
+    $resource = new Resource($this->newActionFactory(), $this->newCompositeCallFactory(), '*', $name, 'TestModel');
     
     $method1 = function(){};
     $method2 = function(){};
