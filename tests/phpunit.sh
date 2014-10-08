@@ -16,12 +16,12 @@ Run the PHPUnit tests defined by the given suite.
 By default the suite is '.', which runs all suites.
 
     -h              Display this help and exit.
-    -d              Deploy the vendor package using composer.
+    -d              Deploy the vendor packages using composer.
     -s              Supress PHPUnit status code, always returning 0.
     -p              Preparations only, this skips the actual testing.
                     Useful for doing a one-time deployment with -d for example.
     -c type[=path]  Generate code coverage reports.
-                    Type indicated the type of reports, based on phpunit functionality.
+                    Type indicates the type of reports, based on phpunit functionality.
                     The optional path indicates where to store the report.
 
 Examples scenarios:
