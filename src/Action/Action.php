@@ -47,27 +47,30 @@ class Action
   public function performAction()
   {
     
+    $result = null;
     $action = $this->action;
     switch($action){
       
       case 'create':
         $data = $this->getRequestContent();
-        return $this->environment->getDriver()->$action($this->model, $data);
-        
+        $result = $this->environment->getDriver()->$action($this->model, $data);
+        break;
+      
       case 'replace':
         $id = $this->environment->getRequest()->params['id'];
         $data = $this->getRequestContent();
-        return $this->environment->getDriver()->$action($this->model, $id, $data);
-        
+        $result = $this->environment->getDriver()->$action($this->model, $id, $data);
+        break;
+      
       case 'read':
       case 'delete':
         $id = $this->environment->getRequest()->params['id'];
-        return $this->environment->getDriver()->$action($this->model, $id);
-        
-      default:
-        throw new Exception("Unknown action '".$action."'");
+        $result = $this->environment->getDriver()->$action($this->model, $id);
+        break;
       
     }
+    
+    return $result;
     
   }
   
