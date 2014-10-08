@@ -13,6 +13,7 @@ class Resource
   protected $befores;
   protected $afters;
   protected $compositeCallFactory;
+  protected $generatedComposites;
   
   public function getCompositeCallFactory(){
     return $this->compositeCallFactory;
@@ -56,6 +57,7 @@ class Resource
       $this->befores[$action] = array();
       $this->afters[$action] = array();
     }
+    $this->generatedComposites = array();
     
   }
   
@@ -72,7 +74,14 @@ class Resource
       
       $this->befores[$action][] = $callback;
       
+      if(array_key_exists($action, $this->generatedComposites)){
+        $composite = $this->generatedComposites[$action];
+        $composite->setBefores($this->befores[$action]);
+      }
+      
     }
+    
+    return $this;
     
   }
   
@@ -80,7 +89,6 @@ class Resource
   {
     
     $actions = $this->normalizeActions($actions);
-    
     foreach($actions as $action => $value)
     {
       
@@ -89,7 +97,14 @@ class Resource
       
       $this->afters[$action][] = $callback;
       
+      if(array_key_exists($action, $this->generatedComposites)){
+        $composite = $this->generatedComposites[$action];
+        $composite->setAfters($this->afters[$action]);
+      }
+      
     }
+    
+    return $this;
     
   }
   
@@ -141,6 +156,7 @@ class Resource
     $call = $this->compositeCallFactory->__invoke();
     $call->setBefores($this->befores[$action]);
     $call->setAfters($this->afters[$action]);
+    $this->generatedComposites[$action] = $call;
     return $call;
   }
   
