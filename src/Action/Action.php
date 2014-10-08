@@ -97,7 +97,7 @@ class Action
     
     $content = json_decode($content->getRaw(), true);
     
-    if(empty($content))
+    if(!is_array($content))
       throw new Exception("Empty body while a JSON object was expected.");
     
     return $content;
