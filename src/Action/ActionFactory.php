@@ -1,27 +1,13 @@
 <?php namespace Tuxion\DoctrineRest\Action;
 
-use Tuxion\DoctrineRest\Domain\Driver\DriverInterface;
-use Tuxion\DoctrineRest\Responder\ResponderInterface;
-use Aura\Web\Request;
-
 class ActionFactory
 {
   
   protected $model;
-  protected $driver;
-  protected $request;
-  protected $responder;
+  protected $environment;
   
-  public function getRequest(){
-    return $this->request;
-  }
-  
-  public function getResponder(){
-    return $this->responder;
-  }
-  
-  public function getDriver(){
-    return $this->driver;
+  public function getEnvironment(){
+    return $this->environment;
   }
   
   public function getModel(){
@@ -32,19 +18,15 @@ class ActionFactory
     $this->model = $value;
   }
   
-  public function __construct(Request $request, ResponderInterface $responder, DriverInterface $driver)
+  public function __construct(Environment $environment)
   {
-    $this->driver = $driver;
-    $this->request = $request;
-    $this->responder = $responder;
+    $this->environment = $environment;
   }
   
   public function __invoke($action)
   {
     return new Action(
-      $this->request,
-      $this->responder,
-      $this->driver,
+      $this->environment,
       $action,
       $this->model
     );

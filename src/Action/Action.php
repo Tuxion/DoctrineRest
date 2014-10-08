@@ -1,21 +1,16 @@
 <?php namespace Tuxion\DoctrineRest\Action;
 
 use \Exception;
-use Aura\Web\Request;
-use Tuxion\DoctrineRest\Domain\Driver\DriverInterface;
-use Tuxion\DoctrineRest\Responder\ResponderInterface;
 
 class Action
 {
   
   protected $model;
-  protected $driver;
   protected $action;
-  protected $request;
-  protected $responder;
+  protected $environment;
   
-  public function getResponder(){
-    return $this->responder;
+  public function getEnvironment(){
+    return $this->environment;
   }
   
   public function getModel(){
@@ -26,26 +21,14 @@ class Action
     return $this->action;
   }
   
-  public function getDriver(){
-    return $this->driver;
-  }
-  
-  public function getRequest(){
-    return $this->request;
-  }
-  
   public function __construct(
-    Request $request,
-    ResponderInterface $responder,
-    DriverInterface $driver,
+    Environment $environment,
     $action,
     $model)
   {
     $this->model = $model;
-    $this->driver = $driver;
     $this->action = $action;
-    $this->request = $request;
-    $this->responder = $responder;
+    $this->environment = $environment;
   }
   
   public function __invoke()
@@ -56,21 +39,24 @@ class Action
       
       case 'create':
         $data = $this->getRequestContent();
-        $result = $this->driver->$action($this->model, $data);
-        $this->responder->setResult($result);
-        return $this->responder;
+        $result = $this->environment->getDriver()->$action($this->model, $data);
+        $responder = $this->environment->getResponder();
+        $responder->setResult($result);
+        return $responder;
         
       case 'replace':
         $data = $this->getRequestContent();
-        $result = $this->driver->$action($this->model, $this->request->params['id'], $data);
-        $this->responder->setResult($result);
-        return $this->responder;
+        $result = $this->environment->getDriver()->$action($this->model, $this->environment->getRequest()->params['id'], $data);
+        $responder = $this->environment->getResponder();
+        $responder->setResult($result);
+        return $responder;
       
       case 'read':
       case 'delete':
-        $result = $this->driver->$action($this->model, $this->request->params['id']);
-        $this->responder->setResult($result);
-        return $this->responder;
+        $result = $this->environment->getDriver()->$action($this->model, $this->environment->getRequest()->params['id']);
+        $responder = $this->environment->getResponder();
+        $responder->setResult($result);
+        return $responder;
       
       default:
         throw new Exception("Unknown action '".$action."'");
@@ -82,7 +68,7 @@ class Action
   protected function getRequestContent()
   {
     
-    $content = $this->request->content;
+    $content = $this->environment->getRequest()->content;
     
     if($content->getType() !== 'application/json'){
       throw new Exception("Invalid Content-Type, must be 'application/json'.");

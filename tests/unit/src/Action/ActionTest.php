@@ -16,6 +16,15 @@ class ActionTest extends \PHPUnit_Framework_TestCase
     $this->webFactory = new WebFactory(array());
   }
   
+  protected function newEnvironment()
+  {
+    return new Environment(
+      $this->newRequest(),
+      $this->newResponder(),
+      $this->newDriver()
+    );
+  }
+  
   protected function newDriver()
   {
     return new DummyDriver();
@@ -67,9 +76,7 @@ class ActionTest extends \PHPUnit_Framework_TestCase
     //Add any default values.
     $params = array_merge(
       array(
-        'request' => $this->newRequest(),
-        'responder' => $this->newResponder(),
-        'driver' => $this->newDriver(),
+        'environment' => $this->newEnvironment(),
         'action' => 'read',
         'model' => 'TestModel'
       ),
@@ -78,9 +85,7 @@ class ActionTest extends \PHPUnit_Framework_TestCase
     
     //Create the action with these parameters.
     return new Action(
-      $params['request'],
-      $params['responder'],
-      $params['driver'],
+      $params['environment'],
       $params['action'],
       $params['model']
     );
@@ -110,10 +115,8 @@ class ActionTest extends \PHPUnit_Framework_TestCase
     
     //Check all variables are present.
     $this->assertEquals($params['model'], $instance->getModel());
-    $this->assertEquals($params['driver'], $instance->getDriver());
     $this->assertEquals($params['action'], $instance->getAction());
-    $this->assertEquals($params['request'], $instance->getRequest());
-    $this->assertEquals($params['responder'], $instance->getResponder());
+    $this->assertEquals($params['environment'], $instance->getEnvironment());
     
   }
   
@@ -145,7 +148,7 @@ class ActionTest extends \PHPUnit_Framework_TestCase
     $body = array(
       'title' => 'Testing 123...'
     );
-    $this->forgeRawBody($params['request'], json_encode($body), 'application/not-json-at-all');
+    $this->forgeRawBody($params['environment']->getRequest(), json_encode($body), 'application/not-json-at-all');
     
     //Define the exception we're expecting.
     $this->setExpectedException(
@@ -168,13 +171,13 @@ class ActionTest extends \PHPUnit_Framework_TestCase
     $body = array(
       'title' => 'Testing 123...'
     );
-    $this->forgeBody($params['request'], $body);
+    $this->forgeBody($params['environment']->getRequest(), $body);
     
     //Run the action.
     $response = $instance();
     
     //Assert the proper call has been made to the driver.
-    $call = $params['driver']->history[0];
+    $call = $params['environment']->getDriver()->history[0];
     $expect = array(
       'method' => $params['action'],
       'model' => $params['model'],
@@ -183,7 +186,7 @@ class ActionTest extends \PHPUnit_Framework_TestCase
     $this->assertSame($expect, $call);
     
     //Assert the return value.
-    $this->assertSame($params['responder'], $response);
+    $this->assertSame($params['environment']->getResponder(), $response);
     $this->assertInstanceOf('Tuxion\DoctrineRest\Domain\Result\ResultInterface', $response->getResult());
     
   }
@@ -197,19 +200,19 @@ class ActionTest extends \PHPUnit_Framework_TestCase
     
     //Set the id to request.
     $id = '54321';
-    $params['request']->params->set(array('id' => $id));
+    $params['environment']->getRequest()->params->set(array('id' => $id));
     
     //Set the request body.
     $body = array(
       'title' => 'Testing 123...'
     );
-    $this->forgeBody($params['request'], $body);
+    $this->forgeBody($params['environment']->getRequest(), $body);
     
     //Run the action.
     $response = $instance();
     
     //Assert the proper call has been made to the driver.
-    $call = $params['driver']->history[0];
+    $call = $params['environment']->getDriver()->history[0];
     $expect = array(
       'method' => $params['action'],
       'model' => $params['model'],
@@ -219,7 +222,7 @@ class ActionTest extends \PHPUnit_Framework_TestCase
     $this->assertSame($expect, $call);
     
     //Assert the return value.
-    $this->assertSame($params['responder'], $response);
+    $this->assertSame($params['environment']->getResponder(), $response);
     $this->assertInstanceOf('Tuxion\DoctrineRest\Domain\Result\ResultInterface', $response->getResult());
     
   }
@@ -233,13 +236,13 @@ class ActionTest extends \PHPUnit_Framework_TestCase
     
     //Set the id to request.
     $id = '54321';
-    $params['request']->params->set(array('id' => $id));
+    $params['environment']->getRequest()->params->set(array('id' => $id));
     
     //Run the action.
     $response = $instance();
     
     //Assert the proper call has been made to the driver.
-    $call = $params['driver']->history[0];
+    $call = $params['environment']->getDriver()->history[0];
     $expect = array(
       'method' => $params['action'],
       'model' => $params['model'],
@@ -248,8 +251,8 @@ class ActionTest extends \PHPUnit_Framework_TestCase
     $this->assertSame($expect, $call);
     
     //Assert the return value.
-    $expect = $params['driver']->readResponse;
-    $this->assertSame($params['responder'], $response);
+    $expect = $params['environment']->getDriver()->readResponse;
+    $this->assertSame($params['environment']->getResponder(), $response);
     $this->assertInstanceOf('Tuxion\DoctrineRest\Domain\Result\ResultInterface', $response->getResult());
     
   }
@@ -263,13 +266,13 @@ class ActionTest extends \PHPUnit_Framework_TestCase
     
     //Set the id to request.
     $id = '54321';
-    $params['request']->params->set(array('id' => $id));
+    $params['environment']->getRequest()->params->set(array('id' => $id));
     
     //Run the action.
     $response = $instance();
     
     //Assert the proper call has been made to the driver.
-    $call = $params['driver']->history[0];
+    $call = $params['environment']->getDriver()->history[0];
     $expect = array(
       'method' => $params['action'],
       'model' => $params['model'],
@@ -278,7 +281,7 @@ class ActionTest extends \PHPUnit_Framework_TestCase
     $this->assertSame($expect, $call);
     
     //Assert the return value.
-    $this->assertSame($params['responder'], $response);
+    $this->assertSame($params['environment']->getResponder(), $response);
     $this->assertInstanceOf('Tuxion\DoctrineRest\Domain\Result\ResultInterface', $response->getResult());
     
   }

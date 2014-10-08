@@ -9,10 +9,14 @@ class Common extends Config
   public function define(Container $di)
   {
     
-    $di->params['Tuxion\DoctrineRest\Action\ActionFactory'] = array(
+    $di->params['Tuxion\DoctrineRest\Action\Environment'] = array(
       'request' => $di->lazyGet('aura/web-kernel:request'),
       'driver' => $di->lazyNew('Tuxion\DoctrineRest\Domain\Driver\DoctrineDriver'),
       'responder' => $di->lazyNew('Tuxion\DoctrineRest\Responder\RestResponder')
+    );
+    
+    $di->params['Tuxion\DoctrineRest\Action\ActionFactory'] = array(
+      'environment' => $di->lazyNew('Tuxion\DoctrineRest\Action\Environment')
     );
     
     $di->params['Tuxion\DoctrineRest\Domain\Driver\DoctrineDriver'] = array(
