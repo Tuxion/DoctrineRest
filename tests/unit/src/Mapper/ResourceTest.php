@@ -291,10 +291,11 @@ class ResourceTest extends \PHPUnit_Framework_TestCase
     $method3 = function(){};
     $method4 = function(){};
     
-    $resource->before('GET|PUT', $method1);
-    $resource->before('create', $method2);
-    $resource->before('*', $method3);
-    $resource->before(array('delete','GET'), $method4);
+    $resource
+      ->before('GET|PUT', $method1)
+      ->before('create', $method2)
+      ->before('*', $method3)
+      ->before(array('delete','GET'), $method4);
     
     $expect = array(
       'create' => array($method2, $method3),
@@ -318,10 +319,11 @@ class ResourceTest extends \PHPUnit_Framework_TestCase
     $method3 = function(){};
     $method4 = function(){};
     
-    $resource->after('GET|PUT', $method1);
-    $resource->after('create', $method2);
-    $resource->after('*', $method3);
-    $resource->after(array('delete','GET'), $method4);
+    $resource
+      ->after('GET|PUT', $method1)
+      ->after('create', $method2)
+      ->after('*', $method3)
+      ->after(array('delete','GET'), $method4);
     
     $expect = array(
       'create' => array($method2, $method3),
