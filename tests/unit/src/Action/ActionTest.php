@@ -71,8 +71,7 @@ class ActionTest extends \PHPUnit_Framework_TestCase
         'responder' => $this->newResponder(),
         'driver' => $this->newDriver(),
         'action' => 'read',
-        'model' => 'TestModel',
-        'resource' => 'test-resource',
+        'model' => 'TestModel'
       ),
       $params
     );
@@ -83,8 +82,7 @@ class ActionTest extends \PHPUnit_Framework_TestCase
       $params['responder'],
       $params['driver'],
       $params['action'],
-      $params['model'],
-      $params['resource']
+      $params['model']
     );
     
   }
@@ -115,7 +113,6 @@ class ActionTest extends \PHPUnit_Framework_TestCase
     $this->assertEquals($params['driver'], $instance->getDriver());
     $this->assertEquals($params['action'], $instance->getAction());
     $this->assertEquals($params['request'], $instance->getRequest());
-    $this->assertEquals($params['resource'], $instance->getResource());
     $this->assertEquals($params['responder'], $instance->getResponder());
     
   }

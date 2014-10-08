@@ -10,7 +10,6 @@ class ActionFactory
   protected $model;
   protected $driver;
   protected $request;
-  protected $resource;
   protected $responder;
   
   public function getRequest(){
@@ -33,14 +32,6 @@ class ActionFactory
     $this->model = $value;
   }
   
-  public function getResource(){
-    return $this->resource;
-  }
-  
-  public function setResource($value){
-    $this->resource = $value;
-  }
-  
   public function __construct(Request $request, ResponderInterface $responder, DriverInterface $driver)
   {
     $this->driver = $driver;
@@ -55,8 +46,7 @@ class ActionFactory
       $this->responder,
       $this->driver,
       $action,
-      $this->model,
-      $this->resource
+      $this->model
     );
   }
   

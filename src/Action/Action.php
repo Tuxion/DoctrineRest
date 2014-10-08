@@ -12,7 +12,6 @@ class Action
   protected $driver;
   protected $action;
   protected $request;
-  protected $resource;
   protected $responder;
   
   public function getResponder(){
@@ -35,23 +34,17 @@ class Action
     return $this->request;
   }
   
-  public function getResource(){
-    return $this->resource;
-  }
-  
   public function __construct(
     Request $request,
     ResponderInterface $responder,
     DriverInterface $driver,
     $action,
-    $model,
-    $resource)
+    $model)
   {
     $this->model = $model;
     $this->driver = $driver;
     $this->action = $action;
     $this->request = $request;
-    $this->resource = $resource;
     $this->responder = $responder;
   }
   

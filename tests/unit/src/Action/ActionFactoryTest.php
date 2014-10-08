@@ -58,8 +58,7 @@ class ActionFactoryTest extends \PHPUnit_Framework_TestCase
     
     //Properties.
     $params = array(
-      'model' => 'DummyModel',
-      'resource' => 'dummy-resource'
+      'model' => 'DummyModel'
     );
     
     //Constructor dependencies.
@@ -70,7 +69,6 @@ class ActionFactoryTest extends \PHPUnit_Framework_TestCase
     //Instantiate and set parameters.
     $instance = new ActionFactory($request, $responder, $driver);
     $instance->setModel($params['model']);
-    $instance->setResource($params['resource']);
     
     //Must be populated with the constructor params correctly.
     $this->assertEquals($driver, $instance->getDriver());
@@ -79,7 +77,6 @@ class ActionFactoryTest extends \PHPUnit_Framework_TestCase
     
     //Test getters for set properties.
     $this->assertEquals($params['model'], $instance->getModel());
-    $this->assertEquals($params['resource'], $instance->getResource());
     
   }
   
@@ -89,8 +86,7 @@ class ActionFactoryTest extends \PHPUnit_Framework_TestCase
     //Dependencies
     $params = array(
       'action' => 'create',
-      'model' => 'DummyModel',
-      'resource' => 'dummy-resource'
+      'model' => 'DummyModel'
     );
     
     $driver = $this->newDriver();
@@ -100,7 +96,6 @@ class ActionFactoryTest extends \PHPUnit_Framework_TestCase
     //Instantiate and set parameters.
     $instance = new ActionFactory($request, $responder, $driver);
     $instance->setModel($params['model']);
-    $instance->setResource($params['resource']);
     
     //Invoke the factory.
     $output = $instance($params['action']);
@@ -116,7 +111,6 @@ class ActionFactoryTest extends \PHPUnit_Framework_TestCase
     //Must be populated with the params correctly.
     $this->assertEquals($params['model'], $output->getModel());
     $this->assertEquals($params['action'], $output->getAction());
-    $this->assertEquals($params['resource'], $output->getResource());
     
   }
   
