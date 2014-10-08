@@ -10,6 +10,7 @@ class CommonTest extends AbstractContainerTest
   
   protected $router;
   protected $dummyEntity = 'Tuxion\DoctrineRest\Domain\Dummy\DummyEntity';
+  protected $executionTracker;
   
   protected function getConfigClasses()
   {
@@ -45,11 +46,18 @@ class CommonTest extends AbstractContainerTest
   public function setUp()
   {
     parent::setUp();
+    $this->executionTracker = (object)array(
+      'before' => false,
+      'after' => false
+    );
     $this->router = $this->generateRoutes();
   }
   
   public function testGetDummyRequest()
   {
+    
+    //Reset the tracker here.
+    $this->resetTracker();
     
     //Insert example dummy.
     $driver = $this->di->newInstance('Tuxion\DoctrineRest\Domain\Driver\DoctrineDriver');
@@ -74,11 +82,15 @@ class CommonTest extends AbstractContainerTest
       'body' => $response->content->get()
     ));
     
+    $this->assertEquals((object)array('before' => true, 'after' => true), $this->executionTracker);
     
   }
   
   public function testPostDummyRequest()
   {
+    
+    //Reset the tracker here.
+    $this->resetTracker();
     
     //Go through a request.
     $router = $this->router;
@@ -101,10 +113,15 @@ class CommonTest extends AbstractContainerTest
       'body' => $response->content->get()
     ));
     
+    $this->assertEquals((object)array('before' => true, 'after' => true), $this->executionTracker);
+    
   }
   
   public function testPutDummyRequest()
   {
+    
+    //Reset the tracker here.
+    $this->resetTracker();
     
     //Insert example dummy.
     $driver = $this->di->newInstance('Tuxion\DoctrineRest\Domain\Driver\DoctrineDriver');
@@ -133,10 +150,15 @@ class CommonTest extends AbstractContainerTest
       'body' => $response->content->get()
     ));
     
+    $this->assertEquals((object)array('before' => true, 'after' => true), $this->executionTracker);
+    
   }
   
   public function testDeleteDummyRequest()
   {
+    
+    //Reset the tracker here.
+    $this->resetTracker();
     
     //Insert example dummy.
     $driver = $this->di->newInstance('Tuxion\DoctrineRest\Domain\Driver\DoctrineDriver');
@@ -158,6 +180,8 @@ class CommonTest extends AbstractContainerTest
       'status' => $response->status->get(),
       'body' => $response->content->get()
     ));
+    
+    $this->assertEquals((object)array('before' => true, 'after' => true), $this->executionTracker);
     
   }
   
@@ -214,7 +238,10 @@ class CommonTest extends AbstractContainerTest
       'routePrefix' => '/rest'
     ));
     
-    $mapper->resource('*', $name, $model);
+    $tracker = $this->executionTracker;
+    $mapper->resource('*', $name, $model)
+      ->before('*', function()use(&$tracker){$tracker->before = true;})
+      ->after('*', function()use(&$tracker){$tracker->after = true;});
     
     return $mapper->getRouter();
     
@@ -248,6 +275,12 @@ class CommonTest extends AbstractContainerTest
     //Return the response.
     return $this->di->get('aura/web-kernel:response');
     
+  }
+  
+  protected function resetTracker()
+  {
+    $this->executionTracker->before = false;
+    $this->executionTracker->after = false;
   }
   
 }

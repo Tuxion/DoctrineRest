@@ -13,7 +13,6 @@ Links Doctrine models to Aura.Router in a simple CRUD fashion.
 
 ### Missing tests
 
-* Integration tests for before and after calls.
 * Test for empty bodies at action.
 * Test for null body in deleted results.
 * Explicit test for ResultFactory.
