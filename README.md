@@ -8,13 +8,8 @@ Links Doctrine models to Aura.Router in a simple CRUD fashion.
 
 ### TODO
 
-* Actually use the CompositeCall features in the action.
 * Consider a PHP 5.3 compatible way of exposing JSON body rather than `\JsonSerialize`.
 * Implement custom exceptions
-* Factory die een route attacher instance maakt.
-  - neemt een resource name
-  - neemt een model class name
-  - neemt een verwijzing naar de actions
 
 ### Missing tests
 
@@ -22,9 +17,6 @@ Links Doctrine models to Aura.Router in a simple CRUD fashion.
 * Test for empty bodies at action.
 * Test for null body in deleted results.
 * Explicit test for ResultFactory.
-* Explicit test for CompositeCallFactory.
-* Explicit test for Mapper\ResourceFactory.
-* Explicit test for Action\Environment.
 
 ```php
 <?php
