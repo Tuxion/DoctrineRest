@@ -15,7 +15,6 @@ Links Doctrine models to Aura.Router in a simple CRUD fashion.
 
 * Test for empty bodies at action.
 * Test for null body in deleted results.
-* Explicit test for ResultFactory.
 
 ```php
 <?php

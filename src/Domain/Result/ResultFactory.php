@@ -1,6 +1,5 @@
 <?php namespace Tuxion\DoctrineRest\Domain\Result;
 
-use \Exception;
 use \ReflectionClass;
 
 /**
