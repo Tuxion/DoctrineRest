@@ -65,7 +65,7 @@ class DoctrineDriver extends AbstractDriver
     
     //Default exception handler.
     catch(Exception $ex){
-      return $this->handleException($ex, $data);
+      return $this->handleException($ex, array('data'=>$data));
     }
     
   }
