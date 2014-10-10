@@ -108,4 +108,29 @@ class RestResponderTest extends \PHPUnit_Framework_TestCase
     
   }
   
+  public function testNullResultBody()
+  {
+    
+    $response = $this->newResponse();
+    $statusCodes = $this->newStatusCodes();
+    $instance = new RestResponder($response, $statusCodes);
+    
+    $result = new DummyResult(null);
+    $instance->setResult($result);
+    
+    $output = $instance();
+    
+    //Should return modified response.
+    $this->assertSame($response, $output);
+    
+    //Check for the header modifications.
+    $this->assertEquals(500, $output->status->getCode());
+    
+    //Check the body is empty.
+    $this->assertEquals(null, $output->content->getCharset());
+    $this->assertEquals(null, $output->content->getType());
+    $this->assertEquals(null, $output->content->get());
+    
+  }
+  
 }

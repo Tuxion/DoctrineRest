@@ -165,7 +165,42 @@ class ActionTest extends \PHPUnit_Framework_TestCase
     
     //Define the exception we're expecting.
     $this->setExpectedException(
-      'Exception', "Invalid Content-Type, must be 'application/json'"
+      'Exception', "Invalid Content-Type, must be 'application/json'."
+    );
+    throw $response->getResult()->getException();
+    
+  }
+  
+  public function testEmptyBodyAction()
+  {
+    
+    //Create an instance.
+    $params = array('action' => 'create');
+    $instance = $this->newInstance($params);
+    
+    //Set the empty request body.
+    $this->forgeRawBody($params['environment']->getRequest(), '', 'application/json');
+    
+    //Run the action.
+    $response = $instance();
+    
+    //Assert that the driver was not called.
+    $expect = array(
+      'driverCalls' => 0
+    );
+    $actual = array(
+      'driverCalls' => count($params['environment']->getDriver()->history),
+    );
+    
+    $this->assertEquals($expect, $actual);
+    
+    //Assert the return value.
+    $this->assertSame($params['environment']->getResponder(), $response);
+    $this->assertInstanceOf('Tuxion\DoctrineRest\Domain\Result\ErrorResult', $response->getResult());
+    
+    //Define the exception we're expecting.
+    $this->setExpectedException(
+      'Exception', "Empty body while a JSON object was expected."
     );
     throw $response->getResult()->getException();
     
