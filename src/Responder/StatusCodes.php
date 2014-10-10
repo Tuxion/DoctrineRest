@@ -32,6 +32,9 @@ class StatusCodes
       case "$ns\DeletedResult":   return 200;
       case "$ns\FoundResult":     return 200;
       
+      //404 Not Found
+      case "$ns\NotFoundResult":  return 404;
+      
       //500 Internal Server Error
       case "$ns\ErrorResult":     return 500;
       default:                    return 500;

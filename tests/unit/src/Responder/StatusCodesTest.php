@@ -5,6 +5,7 @@ use Tuxion\DoctrineRest\Domain\Result\CustomResult;
 use Tuxion\DoctrineRest\Domain\Result\DeletedResult;
 use Tuxion\DoctrineRest\Domain\Result\ErrorResult;
 use Tuxion\DoctrineRest\Domain\Result\FoundResult;
+use Tuxion\DoctrineRest\Domain\Result\NotFoundResult;
 use Tuxion\DoctrineRest\Domain\Result\ReplacedResult;
 use Tuxion\DoctrineRest\Domain\Result\DummyResult;
 
@@ -41,6 +42,15 @@ class StatusCodesTest extends \PHPUnit_Framework_TestCase
   {
     $code = $instance->fromResult(new FoundResult(array()));
     $this->assertEquals(200, $code);
+  }
+  
+  /**
+   * @depends testConstructor
+   */
+  public function testNotFoundResult($instance)
+  {
+    $code = $instance->fromResult(new NotFoundResult(array()));
+    $this->assertEquals(404, $code);
   }
   
   /**
