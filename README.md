@@ -8,13 +8,11 @@ Links Doctrine models to Aura.Router in a simple CRUD fashion.
 
 ### TODO
 
+* Implement a readAll action
+* Make sure that the replace action does not act as an update action
+* Consider an update action (PATCH)
 * Consider a PHP 5.3 compatible way of exposing JSON body rather than `\JsonSerialize`.
 * Implement custom exceptions
-
-### Missing tests
-
-* Test for empty bodies at action.
-* Test for null body in deleted results.
 
 ```php
 <?php

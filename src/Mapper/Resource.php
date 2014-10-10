@@ -4,53 +4,127 @@ use \Exception;
 use Tuxion\DoctrineRest\Action\ActionFactory;
 use Tuxion\DoctrineRest\Domain\Composite\CompositeCallFactory;
 
+/**
+ * A class that represents one resource that has been attached to the Aura Router.
+ */
 class Resource
 {
   
+  /**
+   * The class name of the model to map this resource to.
+   * @var string
+   */
   protected $model;
+  
+  /**
+   * A factory for new Action instances.
+   * @var ActionFactory
+   */
   protected $actionFactory;
+  
+  /**
+   * The actions to support for this resource (in a normalized array format).
+   * @var array
+   * @see $this->normalizeActions()
+   */
   protected $actions;
+  
+  /**
+   * The array of callable before methods per action.
+   * @var array
+   */
   protected $befores;
+  
+  /**
+   * The array of callable after methods per action.
+   * @var array
+   */
   protected $afters;
+  
+  /**
+   * A factory for new CompositeCall instances.
+   * @var CompositeCallFactory
+   */
   protected $compositeCallFactory;
+  
+  /**
+   * A cache of already generated composite calls per action.
+   * @var array
+   */
   protected $generatedComposites;
   
+  /**
+   * Returns the factory for new CompositeCall instances.
+   * @return CompositeCallFactory
+   */
   public function getCompositeCallFactory(){
     return $this->compositeCallFactory;
   }
   
+  /**
+   * Returns the array of callable after methods per action.
+   * @return array
+   */
   public function getAfters(){
     return $this->afters;
   }
   
+  /**
+   * Returns the array of callable before methods per action.
+   * @return array
+   */
   public function getBefores(){
     return $this->befores;
   }
   
+  /**
+   * Returns the actions to support for this resource (in a normalized array format).
+   * @return array
+   * @see $this->normalizeActions()
+   */
   public function getActions(){
     return $this->actions;
   }
   
+  /**
+   * Returns the class name of the model to map this resource to.
+   * @return string
+   */
   public function getModel(){
     return $this->model;
   }
   
+  /**
+   * Returns the factory for new Action instances.
+   * @return ActionFactory
+   */
   public function getActionFactory(){
     return $this->actionFactory;
   }
   
+  /**
+   * Creates a new Resource instance.
+   * @param ActionFactory        $actionFactory        A factory for new Action instances.
+   * @param CompositeCallFactory $compositeCallFactory A factory for new CompositeCall instances.
+   * @param mixed                $actions              The actions to support for this resource (GET|POST|PUT|DELETE, read|create|replace|delete, as string or array).
+   * @param string               $model                The class name of the model to map this resource to.
+   */
   public function __construct(ActionFactory $actionFactory, CompositeCallFactory $compositeCallFactory, $actions, $model)
   {
     
+    //Strings should really be strings... PHP doesn't type hint this for you.
     if(!(is_string($model) && strlen($model) > 0))
       throw new Exception("Model must be a string (class name).");
     
+    //Store the dependencies.
     $this->model = $model;
     $this->actionFactory = $actionFactory;
     $this->compositeCallFactory = $compositeCallFactory;
     
+    //Normalize the given actions into our internal format.
     $this->actions = $this->normalizeActions($actions);
     
+    //Create empty arrays for each of our actions, so we can append items later.
     $this->befores = array();
     $this->afters = array();
     foreach($this->actions as $action => $value){
@@ -61,19 +135,28 @@ class Resource
     
   }
   
+  /**
+   * Attaches a new before method to the given actions.
+   * @param  mixed    $actions  The actions to support for this resource (GET|POST|PUT|DELETE, read|create|replace|delete, as string or array).
+   * @param  callable $callback The callable that is to be executed.
+   * @return self For the sake of chaining calls.
+   */
   public function before($actions, $callback)
   {
     
+    //Normalize the given actions to our internal format and iterate them.
     $actions = $this->normalizeActions($actions);
-    
     foreach($actions as $action => $value)
     {
       
+      //The format dictates you should explicitly declare support for this action.
       if($value !== true)
         continue;
       
+      //Append the method to our internal references for this action.
       $this->befores[$action][] = $callback;
       
+      //If the CompositeCall has already been created, update it with the new set of actions.
       if(array_key_exists($action, $this->generatedComposites)){
         $composite = $this->generatedComposites[$action];
         $composite->setBefores($this->befores[$action]);
@@ -81,22 +164,33 @@ class Resource
       
     }
     
+    //Enable chaining of calls.
     return $this;
     
   }
   
+  /**
+   * Attaches a new after method to the given actions.
+   * @param  mixed    $actions  The actions to support for this resource (GET|POST|PUT|DELETE, read|create|replace|delete, as string or array).
+   * @param  callable $callback The callable that is to be executed.
+   * @return self For the sake of chaining calls.
+   */
   public function after($actions, $callback)
   {
     
+    //Normalize the given actions to our internal format and iterate them.
     $actions = $this->normalizeActions($actions);
     foreach($actions as $action => $value)
     {
       
+      //The format dictates you should explicitly declare support for this action.
       if($value !== true)
         continue;
       
+      //Append the method to our internal references for this action.
       $this->afters[$action][] = $callback;
       
+      //If the CompositeCall has already been created, update it with the new set of actions.
       if(array_key_exists($action, $this->generatedComposites)){
         $composite = $this->generatedComposites[$action];
         $composite->setAfters($this->afters[$action]);
@@ -104,10 +198,16 @@ class Resource
       
     }
     
+    //Enable chaining of calls.
     return $this;
     
   }
   
+  /**
+   * Attach all the required routes on the Aura Router.
+   * @param  Router $router The Aura Router to attach our routes to.
+   * @return void
+   */
   public function __invoke($router)
   {
     
@@ -142,24 +242,53 @@ class Resource
     
   }
   
+  /**
+   * Simplification to create a new Action.
+   * @param  string $action The name of the action to create the Action for.
+   * @return Action
+   */
   protected function createAction($action)
   {
     
+    //Return a new instance that includes the required composite call.
     return $this->actionFactory->__invoke(
       $this->createCompositeCall($action),
       $action
     );
+    
   }
   
+  /**
+   * Simplification to create a composite call for a given action.
+   * @param  string $action The name of the action to create the CompositeCall for.
+   * @return CompositeCall
+   */
   protected function createCompositeCall($action)
   {
+    
+    //Creates a new CompositeCall.
     $call = $this->compositeCallFactory->__invoke();
+    
+    //Maps the known befores and afters to it.
     $call->setBefores($this->befores[$action]);
     $call->setAfters($this->afters[$action]);
+    
+    //Stores a reference in the generated calls array.
     $this->generatedComposites[$action] = $call;
+    
+    //Returns the new call.
     return $call;
+    
   }
   
+  /**
+   * Normalizes a given actions representation to an internal format.
+   * 
+   * #TODO document the action format details.
+   * 
+   * @param  mixed  $actions A set of actions in one of the possible formats.
+   * @return array
+   */
   protected function normalizeActions($actions)
   {
     
@@ -222,6 +351,11 @@ class Resource
     
   }
   
+  /**
+   * Simplified check that an action has been enabled for this resource.
+   * @param  string  $name The name of the action to run this check for.
+   * @return boolean       Whether or not this action has been enabled for this resource.
+   */
   protected function hasAction($name)
   {
     return array_key_exists($name, $this->actions) && $this->actions[$name] === true;
