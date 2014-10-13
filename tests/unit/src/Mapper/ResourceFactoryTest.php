@@ -24,6 +24,19 @@ class ResourceFactoryTest extends \PHPUnit_Framework_TestCase
     $this->routerFactory = new RouterFactory();
   }
   
+  public function testConstruct()
+  {
+    
+    $actionFactory = $this->newActionFactory();
+    $compositeCallFactory = $this->newCompositeCallFactory();
+    
+    $factory = new ResourceFactory($this->newActionFactory(), $this->newCompositeCallFactory());
+    
+    $this->assertEquals($actionFactory, $factory->getActionFactory());
+    $this->assertEquals($compositeCallFactory, $factory->getCompositeCallFactory());
+    
+  }
+  
   public function testInvoke()
   {
     

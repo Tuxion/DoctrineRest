@@ -19,14 +19,14 @@ class ResourceFactory
    * A factory for new CompositeCall instances.
    * @var CompositeCallFactory
    */
-  protected $compsiteCallFactory;
+  protected $compositeCallFactory;
   
   /**
    * Returns the factory for new CompositeCall instances.
    * @return CompositeCallFactory
    */
-  public function getCompsiteCallFactory(){
-    return $this->compsiteCallFactory;
+  public function getCompositeCallFactory(){
+    return $this->compositeCallFactory;
   }
   
   /**
@@ -39,13 +39,13 @@ class ResourceFactory
   
   /**
    * Creates a new instance of ResourceFactory.
-   * @param ActionFactory        $actionFactory       A factory for new Action instances.
-   * @param CompositeCallFactory $compsiteCallFactory A factory for new CompositeCall instances.
+   * @param ActionFactory        $actionFactory        A factory for new Action instances.
+   * @param CompositeCallFactory $compositeCallFactory A factory for new CompositeCall instances.
    */
-  public function __construct(ActionFactory $actionFactory, CompositeCallFactory $compsiteCallFactory)
+  public function __construct(ActionFactory $actionFactory, CompositeCallFactory $compositeCallFactory)
   {
     $this->actionFactory = $actionFactory;
-    $this->compsiteCallFactory = $compsiteCallFactory;
+    $this->compositeCallFactory = $compositeCallFactory;
   }
   
   /**
@@ -56,7 +56,7 @@ class ResourceFactory
    */
   public function __invoke($actions, $model)
   {
-    return new Resource($this->actionFactory, $this->compsiteCallFactory, $actions, $model);
+    return new Resource($this->actionFactory, $this->compositeCallFactory, $actions, $model);
   }
   
 }
