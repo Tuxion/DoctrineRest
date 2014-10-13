@@ -26,10 +26,10 @@ interface DriverInterface
   /**
    * Reads and returns an existing instance of $model.
    * @param  string $model The class name of the model to operate on.
-   * @param  array  $id    The primary key of the model to read.
+   * @param  array? $id    The primary key of the model to read. If NULL reads all items.
    * @return ResultInterface The result of the operation.
    */
-  public function read($model, $id);
+  public function read($model, $id=null);
   
   /**
    * Deletes an existing instance of $model.

@@ -86,6 +86,41 @@ class CommonTest extends AbstractContainerTest
     
   }
   
+  public function testGetAllDummiesRequest()
+  {
+    
+    //Reset the tracker here.
+    $this->resetTracker();
+    
+    //Insert example dummy.
+    $driver = $this->di->newInstance('Tuxion\DoctrineRest\Domain\Driver\DoctrineDriver');
+    $body = array('title' => 'Testing 1, 2, 3...');
+    $output = $driver->create($this->dummyEntity, $body);
+    
+    //Go through a request.
+    $router = $this->router;
+    $response = $this->executeFakeRequest($router, 'GET', '/rest/instantiation-dummy');
+    
+    //Assert the response.
+    $expect = array(
+      'status' => 'HTTP/1.1 200 OK',
+      'body' => json_encode(array(
+        array(
+          'id' => 1,
+          'title' => 'Testing 1, 2, 3...'
+        )
+      ))
+    );
+    
+    $this->assertEquals($expect, array(
+      'status' => $response->status->get(),
+      'body' => $response->content->get()
+    ));
+    
+    $this->assertEquals((object)array('before' => true, 'after' => true), $this->executionTracker);
+    
+  }
+  
   public function testPostDummyRequest()
   {
     

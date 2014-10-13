@@ -156,6 +156,39 @@ class DoctrineDriverTest extends \PHPUnit_Framework_TestCase
   
   /**
    * @depends testResultFactorySetter
+   * @depends testCreateDummy
+   */
+  public function testReadAllDummies($driver)
+  {
+    
+    $id = null;
+    $body = array('title' => 'Testing 1, 2, 3...');
+    $result = $driver->read($this->dummyEntity, $id);
+    
+    //Detailed exception output helps, so throw ErrorResult exceptions.
+    if($result instanceof ErrorResult){
+      throw new \Exception("An ErrorResult was thrown.", 0, $result->getException());
+    }
+    
+    //Check the result class matches.
+    $this->assertInstanceOf('Tuxion\DoctrineRest\Domain\Result\FoundResult', $result);
+    
+    //The body must contain an array with DummyEntity as first row.
+    $output = $result->getBody();
+    $this->assertInternalType('array', $output);
+    $row1 = $output[0];
+    $this->assertInstanceOf('Tuxion\DoctrineRest\Domain\Dummy\DummyEntity', $row1);
+    
+    //The title must be properly set.
+    $this->assertSame($body['title'], $row1->getTitle());
+    
+    //The id must be the same.
+    $this->assertEquals(1, $row1->getId());
+    
+  }
+  
+  /**
+   * @depends testResultFactorySetter
    */
   public function testReadNotFoundDummy($driver)
   {
@@ -176,11 +209,17 @@ class DoctrineDriverTest extends \PHPUnit_Framework_TestCase
   {
     
     //This is not a valid ID.
-    $id = null;
+    $id = 'sixteen';
     $result = $driver->read($this->dummyEntity, $id);
     
     //Check the result class matches.
     $this->assertInstanceOf('Tuxion\DoctrineRest\Domain\Result\ErrorResult', $result);
+    
+    //Define the exception we're expecting.
+    $this->setExpectedException(
+      'Exception', "Invalid ID \"sixteen\" should be a positive integer."
+    );
+    throw $result->getException();
     
   }
   

@@ -353,7 +353,7 @@ class ResourceTest extends \PHPUnit_Framework_TestCase
     
     $expect = array(
       'name' => "$namePrefix.read",
-      'path' => "$pathPrefix/{id}",
+      'path' => "$pathPrefix{/id}",
       'method' => array('GET'),
       'tokens' => array('id' => '\d+')
     );

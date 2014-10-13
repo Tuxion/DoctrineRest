@@ -25,7 +25,7 @@ abstract class AbstractDriver implements DriverInterface
   //See DriverInterface for details of the methods below.
   abstract public function create($model, $data);
   abstract public function replace($model, $id, $data);
-  abstract public function read($model, $id);
+  abstract public function read($model, $id=null);
   abstract public function delete($model, $id);
   
 }

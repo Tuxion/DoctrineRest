@@ -302,6 +302,32 @@ class ActionTest extends \PHPUnit_Framework_TestCase
     
   }
   
+  public function testReadAllAction()
+  {
+    
+    //Create an instance.
+    $params = array('action' => 'read');
+    $instance = $this->newInstance($params);
+    
+    //Run the action.
+    $response = $instance();
+    
+    //Assert the proper call has been made to the driver.
+    $call = $params['environment']->getDriver()->history[0];
+    $expect = array(
+      'method' => $params['action'],
+      'model' => $params['model'],
+      'id' => null
+    );
+    $this->assertSame($expect, $call);
+    
+    //Assert the return value.
+    $expect = $params['environment']->getDriver()->readResponse;
+    $this->assertSame($params['environment']->getResponder(), $response);
+    $this->assertInstanceOf('Tuxion\DoctrineRest\Domain\Result\ResultInterface', $response->getResult());
+    
+  }
+  
   public function testDeleteAction()
   {
     

@@ -227,7 +227,7 @@ class Resource
     
     $action = 'read';
     if($this->hasAction($action)){
-      $router->addGet($action, '/{id}')->addValues(array('action'=>$this->createAction($action)));
+      $router->addGet($action, '{/id}')->addValues(array('action'=>$this->createAction($action)));
     }
     
     $action = 'replace';

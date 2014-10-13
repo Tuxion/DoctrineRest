@@ -7,6 +7,7 @@ class DummyDriver extends AbstractDriver
   
   public $history;
   public $readResponse;
+  public $readAllResponse;
   
   public function getResultFactory(){
     return $this->resultFactory;
@@ -20,6 +21,10 @@ class DummyDriver extends AbstractDriver
       'id' => 12345,
       'title' => 'TestValue'
     ));
+    $this->readAllResponse = new DummyResult(array(array(
+      'id' => 12345,
+      'title' => 'TestValue'
+    )));
     
   }
   
@@ -50,7 +55,7 @@ class DummyDriver extends AbstractDriver
     
   }
   
-  public function read($model, $id)
+  public function read($model, $id=null)
   {
     
     $this->history[] = array(
@@ -59,7 +64,7 @@ class DummyDriver extends AbstractDriver
       'id' => $id
     );
     
-    return $this->readResponse;
+    return is_null($id) ? $this->readAllResponse : $this->readResponse;
     
   }
   

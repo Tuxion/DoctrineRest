@@ -124,8 +124,18 @@ class Action
         $result = $this->environment->getDriver()->$action($this->model, $id, $data);
         break;
       
-      //Read and delete operations, both only need an ID to operate.
+      //Read or read-all operations, has an optional ID parameter.
       case 'read':
+        $id = null;
+        $params = $this->environment->getRequest()->params;
+        
+        if(array_key_exists('id', $params))
+          $id = $params['id'];
+        
+        $result = $this->environment->getDriver()->$action($this->model, $id);
+        break;
+      
+      //Delete operations, needs an ID to operate.
       case 'delete':
         $id = $this->environment->getRequest()->params['id'];
         $result = $this->environment->getDriver()->$action($this->model, $id);

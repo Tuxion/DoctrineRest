@@ -116,16 +116,33 @@ class DoctrineDriver extends AbstractDriver
   /**
    * Reads and returns an existing instance of $model.
    * @param  string $model The class name of the model to operate on.
-   * @param  array  $id    The primary key of the model to read.
+   * @param  array? $id    The primary key of the model to read. If NULL reads all items.
    * @return ResultInterface The result of the operation.
    */
-  public function read($model, $id)
+  public function read($model, $id=null)
   {
     
     try {
       
+      //Find all items?
+      if(is_null($id)){
+        
+        //Do this using the entity repository.
+        $repository = $this->manager->getRepository($model);
+        $resultSet = $repository->findAll();
+        
+        //Wrap the output in a FoundResult.
+        return $this->resultFactory->found($resultSet);
+        
+      }
+      
+      //Must be positive integer.
+      $cleanId = intval($id);
+      if($cleanId <= 0)
+        throw new Exception('Invalid ID "'.$id.'" should be a positive integer.');
+      
       //Locate the existing model data and have Doctrine populate it for us.
-      $object = $this->manager->find($model, $id);
+      $object = $this->manager->find($model, $cleanId);
       
       //Report NotFoundResult if this ID does not match in the database.
       if(!isset($object)){
