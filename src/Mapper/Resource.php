@@ -284,7 +284,27 @@ class Resource
   /**
    * Normalizes a given actions representation to an internal format.
    * 
-   * #TODO document the action format details.
+   * Format option 1: '*' (wildcard string)
+   *   This resolves to all actions being supported.
+   * 
+   * Format option 2: 'action1|action2'
+   *   This resolves to each of the given actions to be accepted.
+   * 
+   * Format option 3: ['action1', 'action2']
+   *   This resolves to each of the given actions to be accepted.
+   * 
+   * Format option 4: ['action1' => true, 'action2' => false]
+   *   This resolves to each of the given actions that have a value of TRUE, to be accepted.
+   * 
+   * Possible action names (values behind equals are HTTP method aliases):
+   *   read     == GET
+   *   create   == POST
+   *   replace  == PUT
+   *   delete   == DELETE
+   * 
+   * The normalized output is in the option 4 format,
+   *   but with all available actions defined either as true or false
+   *   and all aliases will be resolved to their primary names.
    * 
    * @param  mixed  $actions A set of actions in one of the possible formats.
    * @return array
