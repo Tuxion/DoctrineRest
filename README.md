@@ -1,4 +1,4 @@
-# DoctrineRest - Alpha version
+# DoctrineRest - 0.1.0 Beta version
 
 [![Build Status](https://travis-ci.org/Tuxion/DoctrineRest.svg?branch=master)](https://travis-ci.org/Tuxion/DoctrineRest)
 **This library is currently not stable. Do not use for production.**
