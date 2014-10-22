@@ -31,13 +31,13 @@ class CompositeCall implements CompositeCallInterface
    * The array of callable before methods.
    * @var array
    */
-  protected $befores;
+  protected $befores = array();
   
   /**
    * The array of callable after methods.
    * @var array
    */
-  protected $afters;
+  protected $afters = array();
   
   /**
    * The callable (main) method.
@@ -116,15 +116,6 @@ class CompositeCall implements CompositeCallInterface
     
     $this->befores = $value;
     
-  }
-  
-  /**
-   * Creates a new instance of CompositeCall.
-   */
-  public function __construct()
-  {
-    $this->befores = array();
-    $this->afters = array();
   }
   
   /**
