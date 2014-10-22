@@ -129,10 +129,20 @@ class Action
         $id = null;
         $params = $this->environment->getRequest()->params;
         
-        if(array_key_exists('id', $params))
+        if(array_key_exists('id', $params)){
           $id = $params['id'];
+        }
         
-        $result = $this->environment->getDriver()->$action($this->model, $id);
+        //Do a read of one entry.
+        if($id){
+          $result = $this->environment->getDriver()->read($this->model, $id);
+        }
+        
+        //Do a read of all entries.
+        else{
+          $result = $this->environment->getDriver()->readAll($this->model);
+        }
+        
         break;
       
       //Delete operations, needs an ID to operate.

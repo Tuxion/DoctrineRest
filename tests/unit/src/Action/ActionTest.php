@@ -315,9 +315,9 @@ class ActionTest extends \PHPUnit_Framework_TestCase
     //Assert the proper call has been made to the driver.
     $call = $params['environment']->getDriver()->history[0];
     $expect = array(
-      'method' => $params['action'],
+      'method' => 'readAll',
       'model' => $params['model'],
-      'id' => null
+      'options' => array()
     );
     $this->assertSame($expect, $call);
     

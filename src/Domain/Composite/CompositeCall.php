@@ -17,9 +17,11 @@ use Tuxion\DoctrineRest\Domain\Result\ErrorResult;
  * 
  * If a before method returns a result, this ends execution immediately.
  * 
- * For the return values of the main method and after methods, the most recent return value is used as the final output.
+ * For the return values of the main method and after methods,
+ * the most recent return value is used as the final output.
  * 
- * If at any point an exception was thrown, the chain stops execution immediately and returns an ErrorResult instance based on the exception.
+ * If at any point an exception was thrown the chain stops execution immediately
+ * and returns an ErrorResult instance based on the exception.
  * 
  */
 class CompositeCall implements CompositeCallInterface
@@ -29,13 +31,13 @@ class CompositeCall implements CompositeCallInterface
    * The array of callable before methods.
    * @var array
    */
-  protected $befores;
+  protected $befores = array();
   
   /**
    * The array of callable after methods.
    * @var array
    */
-  protected $afters;
+  protected $afters = array();
   
   /**
    * The callable (main) method.
@@ -114,15 +116,6 @@ class CompositeCall implements CompositeCallInterface
     
     $this->befores = $value;
     
-  }
-  
-  /**
-   * Creates a new instance of CompositeCall.
-   */
-  public function __construct()
-  {
-    $this->befores = array();
-    $this->afters = array();
   }
   
   /**

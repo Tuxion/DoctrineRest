@@ -1,4 +1,4 @@
-# DoctrineRest - Alpha version
+# DoctrineRest - 0.1.0 Beta version
 
 [![Build Status](https://travis-ci.org/Tuxion/DoctrineRest.svg?branch=master)](https://travis-ci.org/Tuxion/DoctrineRest)
 **This library is currently not stable. Do not use for production.**
@@ -35,7 +35,16 @@ Then run `composer update` or `composer install` depending on whether you've ins
 
 ## Configuration
 
-In your project there are two values that need to be defined to use the ResourceMapper.
+First add the following lines to your `Common.php`.
+
+```php
+// Use the web-kernel services for DoctrineRest.
+$di->values['Tuxion/DoctrineRest:router'] = $di->get('aura/web-kernel:router');
+$di->values['Tuxion/DoctrineRest:request'] = $di->get('aura/web-kernel:request');
+$di->values['Tuxion/DoctrineRest:response'] = $di->get('aura/web-kernel:response');
+```
+
+In your project there are two values that need to be defined manually to use the ResourceMapper.
 
 ### `Tuxion/DoctrineRest:entityManager`
 

@@ -10,7 +10,7 @@ class Common extends Config
   {
     
     $di->params['Tuxion\DoctrineRest\Action\Environment'] = array(
-      'request' => $di->lazyGet('aura/web-kernel:request'),
+      'request' => $di->lazyValue('Tuxion/DoctrineRest:request'),
       'driver' => $di->lazyNew('Tuxion\DoctrineRest\Domain\Driver\DoctrineDriver'),
       'responder' => $di->lazyNew('Tuxion\DoctrineRest\Responder\RestResponder')
     );
@@ -28,7 +28,7 @@ class Common extends Config
     );
     
     $di->params['Tuxion\DoctrineRest\Responder\RestResponder'] = array(
-      'response' => $di->lazyGet('aura/web-kernel:response'),
+      'response' => $di->lazyValue('Tuxion/DoctrineRest:response'),
       'statusCodes' => $di->lazyNew('Tuxion\DoctrineRest\Responder\StatusCodes')
     );
     
@@ -39,10 +39,10 @@ class Common extends Config
     
     $di->params['Tuxion\DoctrineRest\Mapper\ResourceMapper'] = array(
       'resourceFactory' => $di->lazyNew('Tuxion\DoctrineRest\Mapper\ResourceFactory'),
-      'routers' => $di->lazyGet('aura/web-kernel:router'),
+      'router' => $di->lazyValue('Tuxion/DoctrineRest:router'),
       'routePrefix' => $di->lazyValue('Tuxion/DoctrineRest:routePrefix')
     );
-      
+    
   }
   
   public function modify(Container $di)

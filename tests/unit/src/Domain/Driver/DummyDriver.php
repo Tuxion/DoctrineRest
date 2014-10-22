@@ -55,7 +55,7 @@ class DummyDriver extends AbstractDriver
     
   }
   
-  public function read($model, $id=null)
+  public function read($model, $id)
   {
     
     $this->history[] = array(
@@ -64,7 +64,20 @@ class DummyDriver extends AbstractDriver
       'id' => $id
     );
     
-    return is_null($id) ? $this->readAllResponse : $this->readResponse;
+    return $this->readResponse;
+    
+  }
+  
+  public function readAll($model, $options=array())
+  {
+    
+    $this->history[] = array(
+      'method' => 'readAll',
+      'model' => $model,
+      'options' => $options
+    );
+    
+    return $this->readAllResponse;
     
   }
   
