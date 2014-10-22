@@ -1,19 +1,30 @@
-<?php namespace Tuxion\DoctrineRest\Driver;
+<?php namespace Tuxion\DoctrineRest\Domain\Driver;
 
-class DummyDriver implements DriverInterface
+use Tuxion\DoctrineRest\Domain\Result\DummyResult;
+
+class DummyDriver extends AbstractDriver
 {
   
   public $history;
   public $readResponse;
+  public $readAllResponse;
+  
+  public function getResultFactory(){
+    return $this->resultFactory;
+  }
   
   public function __construct()
   {
     
     $this->history = array();
-    $this->readResponse = (object)array(
+    $this->readResponse = new DummyResult(array(
       'id' => 12345,
       'title' => 'TestValue'
-    );
+    ));
+    $this->readAllResponse = new DummyResult(array(array(
+      'id' => 12345,
+      'title' => 'TestValue'
+    )));
     
   }
   
@@ -26,7 +37,7 @@ class DummyDriver implements DriverInterface
       'data' => (array)$data
     );
     
-    return $data;
+    return new DummyResult((array)$data);
     
   }
   
@@ -40,7 +51,7 @@ class DummyDriver implements DriverInterface
       'data' => (array)$data
     );
     
-    return $data;
+    return new DummyResult((array)$data);
     
   }
   
@@ -57,6 +68,19 @@ class DummyDriver implements DriverInterface
     
   }
   
+  public function readAll($model, $options=array())
+  {
+    
+    $this->history[] = array(
+      'method' => 'readAll',
+      'model' => $model,
+      'options' => $options
+    );
+    
+    return $this->readAllResponse;
+    
+  }
+  
   public function delete($model, $id)
   {
     
@@ -66,7 +90,7 @@ class DummyDriver implements DriverInterface
       'id' => $id
     );
     
-    return null;
+    return new DummyResult(array('id'=>$id));
     
   }
   

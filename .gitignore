@@ -1,6 +1,6 @@
 coverage.clover
 coverage.html
-tests/unit/vendor
-tests/unit/composer.json
-tests/unit/composer.lock
+tests/vendor
+tests/composer.json
+tests/composer.lock
 vendor
