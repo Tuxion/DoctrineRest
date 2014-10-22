@@ -224,7 +224,8 @@ class CommonTest extends AbstractContainerTest
   {
     
     //Get the current request object.
-    $request = $this->di->get('aura/web-kernel:request');
+    $environment = $this->di->newInstance('Tuxion\DoctrineRest\Action\Environment');
+    $request = $environment->getRequest();
     
     //Fake the request method.
     $raw = new \ReflectionProperty(get_class($request->method), 'value');
@@ -308,7 +309,7 @@ class CommonTest extends AbstractContainerTest
     $responder();
     
     //Return the response.
-    return $this->di->get('aura/web-kernel:response');
+    return $responder->getResponse();
     
   }
   

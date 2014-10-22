@@ -12,10 +12,6 @@ class Test extends Config
   public function define(Container $di)
   {
     
-    //Fake the web-kernel, because this requires php 5.4 currently. And we want to unit test for 5.3.
-    $di->set('aura/web-kernel:request', $di->lazyNew('Aura\Web\Request'));
-    $di->set('aura/web-kernel:response', $di->lazyNew('Aura\Web\Response'));
-    
     //Create an entity manager that handles an in-memory sqlite connection.
     $isDevMode = true;
     $config = DoctrineSetup::createAnnotationMetadataConfiguration(
@@ -30,6 +26,11 @@ class Test extends Config
     
     //Create the entity manager.
     $di->values['Tuxion/DoctrineRest:entityManager'] = EntityManager::create($connection, $config);
+    
+    // Use direct instances instead of including the web-kernel. Since that requires PHP 5.4.
+    $di->values['Tuxion/DoctrineRest:router'] = $di->newInstance('Aura\Router\Router');
+    $di->values['Tuxion/DoctrineRest:request'] = $di->newInstance('Aura\Web\Request');
+    $di->values['Tuxion/DoctrineRest:response'] = $di->newInstance('Aura\Web\Response');
     
   }
 
