@@ -73,7 +73,7 @@ class DoctrineDriver extends AbstractDriver
   /**
    * Replaces an existing instance of $model with $data as it's contents and persists it to the database.
    * @param  string $model The class name of the model to operate on.
-   * @param  array  $id    The primary key of the model to replace.
+   * @param  mixed  $id    The primary key of the model to replace.
    * @param  array  $data  The data to insert into the model.
    * @return ResultInterface The result of the operation.
    */
@@ -116,25 +116,13 @@ class DoctrineDriver extends AbstractDriver
   /**
    * Reads and returns an existing instance of $model.
    * @param  string $model The class name of the model to operate on.
-   * @param  array? $id    The primary key of the model to read. If NULL reads all items.
+   * @param  mixed  $id    The primary key of the model to read.
    * @return ResultInterface The result of the operation.
    */
-  public function read($model, $id=null)
+  public function read($model, $id)
   {
     
     try {
-      
-      //Find all items?
-      if(is_null($id)){
-        
-        //Do this using the entity repository.
-        $repository = $this->manager->getRepository($model);
-        $resultSet = $repository->findAll();
-        
-        //Wrap the output in a FoundResult.
-        return $this->resultFactory->found($resultSet);
-        
-      }
       
       //Must be positive integer.
       $cleanId = intval($id);
@@ -162,9 +150,37 @@ class DoctrineDriver extends AbstractDriver
   }
   
   /**
+   * Reads and returns all instances of $model.
+   * @param  string $model   The class name of the model to operate on.
+   * @param  array  $options Filters and other options for this reading operation.
+   *                         Currently supports no options.
+   * @return ResultInterface The result of the operation.
+   */
+  public function readAll($model, $options=array())
+  {
+    
+    try {
+      
+      //Do this using the entity repository.
+      $repository = $this->manager->getRepository($model);
+      $resultSet = $repository->findAll();
+      
+      //Wrap the output in a FoundResult.
+      return $this->resultFactory->found($resultSet);
+      
+    }
+    
+    //Default exception handler.
+    catch(Exception $ex){
+      return $this->handleException($ex, array('id'=>$id));
+    }
+    
+  }
+  
+  /**
    * Deletes an existing instance of $model.
    * @param  string $model The class name of the model to operate on.
-   * @param  array  $id    The primary key of the model to delete.
+   * @param  mixed  $id    The primary key of the model to delete.
    * @return ResultInterface The result of the operation.
    */
   public function delete($model, $id)

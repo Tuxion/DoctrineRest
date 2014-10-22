@@ -161,9 +161,8 @@ class DoctrineDriverTest extends \PHPUnit_Framework_TestCase
   public function testReadAllDummies($driver)
   {
     
-    $id = null;
     $body = array('title' => 'Testing 1, 2, 3...');
-    $result = $driver->read($this->dummyEntity, $id);
+    $result = $driver->readAll($this->dummyEntity);
     
     //Detailed exception output helps, so throw ErrorResult exceptions.
     if($result instanceof ErrorResult){
