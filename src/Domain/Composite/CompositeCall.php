@@ -17,9 +17,11 @@ use Tuxion\DoctrineRest\Domain\Result\ErrorResult;
  * 
  * If a before method returns a result, this ends execution immediately.
  * 
- * For the return values of the main method and after methods, the most recent return value is used as the final output.
+ * For the return values of the main method and after methods,
+ * the most recent return value is used as the final output.
  * 
- * If at any point an exception was thrown, the chain stops execution immediately and returns an ErrorResult instance based on the exception.
+ * If at any point an exception was thrown the chain stops execution immediately
+ * and returns an ErrorResult instance based on the exception.
  * 
  */
 class CompositeCall implements CompositeCallInterface
