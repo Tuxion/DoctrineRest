@@ -10,14 +10,13 @@
             "email": "beanow@project-virality.com"
         }
     ],
-    "minimum-stability": "dev",
     "require": {
         "php": ">=5.3.0"
     },
     "require-dev": {
-        "aura/di": "2.*@dev",
-        "aura/router": "2.*@dev",
-        "aura/web": "2.*@dev",
+        "aura/di": "~2.0",
+        "aura/router": "~2.0",
+        "aura/web": "~2.0",
         "doctrine/orm": "2.4.4"
     },
     "autoload": {
